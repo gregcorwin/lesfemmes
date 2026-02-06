@@ -51,11 +51,18 @@ img { display:block; max-width:100%; }
 .side-nav .dot:hover { background:var(--text-secondary); }
 .side-nav .dot.active { background:var(--accent-gold); box-shadow:0 0 8px rgba(184,157,106,0.4); transform:scale(1.4); }
 
-/* NAV CONTROLS */
-.nav-controls { position:fixed; bottom:4vh; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:center; gap:3rem; pointer-events:none; opacity:0; transition:opacity .6s ease; }
-.nav-controls.visible { opacity:1; }
+/* STICKY FOOTER BAR */
+.footer-bar {
+  position:fixed; bottom:0; left:0; right:0; z-index:200;
+  height:60px; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(to top, var(--bg-void) 60%, rgba(5,4,4,.95) 85%, transparent 100%);
+  padding:0 2rem;
+  opacity:0; pointer-events:none; transition:opacity .6s ease;
+}
+.footer-bar.visible { opacity:1; pointer-events:auto; }
+.footer-nav { display:flex; align-items:center; gap:3rem; }
 .nav-btn {
-  pointer-events:auto; font-family:'Cormorant Garamond',serif; font-size:.85rem;
+  font-family:'Cormorant Garamond',serif; font-size:.85rem;
   letter-spacing:.3em; text-transform:uppercase; color:var(--text-muted);
   background:none; border:none; cursor:pointer; padding:.8rem 1.5rem;
   transition:all .5s ease; display:flex; align-items:center; gap:.8rem;
@@ -65,6 +72,17 @@ img { display:block; max-width:100%; }
 .nav-btn .arrow { font-size:1.1rem; transition:transform .3s ease; }
 .nav-btn:hover .arrow-right { transform:translateX(4px); }
 .nav-btn:hover .arrow-left { transform:translateX(-4px); }
+.footer-links {
+  position:absolute; right:2.5rem; display:flex; align-items:center; gap:2rem;
+}
+.footer-link {
+  font-family:'Cormorant Garamond',serif; font-size:.8rem;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--text-muted);
+  background:none; border:none; cursor:pointer; padding:.4rem 0;
+  transition:color .4s ease;
+}
+.footer-link:hover { color:var(--accent-gold); }
+.footer-sep { width:1px; height:14px; background:rgba(94,83,69,.3); }
 
 /* ENTRANCE */
 .step-entrance { background:var(--bg-void); }
@@ -181,11 +199,9 @@ img { display:block; max-width:100%; }
 .closing-content p { font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(1.4rem,2.5vw,2rem); color:var(--text-primary); line-height:1.8; }
 .closing-content p+p { margin-top:1.5rem; color:var(--text-secondary); }
 
-/* DOCS */
-.docs-trigger { position:fixed; bottom:2.5vh; right:2.5vw; z-index:200; font-family:'Cormorant Garamond',serif; font-size:.85rem; letter-spacing:.25em; text-transform:uppercase; color:var(--text-bright); background:none; border:none; cursor:pointer; padding:.5rem; transition:color .4s ease; opacity:0; animation:ca 1s ease 3s forwards; }
-.docs-trigger:hover { color:var(--accent-gold); }
-.docs-modal { position:fixed; inset:0; z-index:500; background:rgba(5,4,4,.97); display:none; overflow-y:auto; padding:6vh 5vw; }
-.docs-modal.open { display:block; }
+/* DOCS & QA MODALS */
+.docs-modal, .qa-modal { position:fixed; inset:0; z-index:500; background:rgba(5,4,4,.97); display:none; overflow-y:auto; padding:6vh 5vw; }
+.docs-modal.open, .qa-modal.open { display:block; }
 .docs-modal-inner { max-width:740px; margin:0 auto; }
 .docs-close { position:fixed; top:3vh; right:3vw; font-family:'Cormorant Garamond',serif; font-size:.85rem; letter-spacing:.25em; text-transform:uppercase; color:var(--text-secondary); background:none; border:none; cursor:pointer; padding:.5rem 1rem; z-index:501; transition:color .3s ease; display:flex; align-items:center; gap:.6rem; }
 .docs-close:hover { color:var(--accent-gold); }
@@ -220,25 +236,28 @@ img { display:block; max-width:100%; }
 .qa-answer-inner p:last-child { margin-bottom:0; }
 
 /* SCROLLABLE TEXT STEPS */
-.scrollable-text-step { overflow-y:auto; align-items:flex-start; padding:12vh 0; }
+.scrollable-text-step { overflow-y:auto; align-items:flex-start; padding:12vh 0 10vh; }
 
 /* RESPONSIVE */
 @media(max-width:1000px) {
   .poster-image-wrap { left:50%!important; top:28%!important; }
   .poster-image-wrap img { max-height:42vh; }
-  .wall-text-panel { left:5vw!important; top:auto!important; bottom:2vh!important; transform:none!important; width:90vw!important; max-height:38vh; }
+  .wall-text-panel { left:5vw!important; top:auto!important; bottom:70px!important; transform:none!important; width:90vw!important; max-height:36vh; }
   .step-poster.text-revealed .wall-text-panel { transform:none!important; }
   .poster-spotlight { display:none; }
   .side-nav { display:none; }
   .mirror-frame { width:min(200px,60vw); }
   .entrance-walls { border-width:25vh; }
-  .nav-controls { bottom:1.5vh; }
+  .footer-links { position:static; margin-top:0; gap:1.2rem; }
+  .footer-bar { height:auto; flex-direction:column; gap:.3rem; padding:.6rem 1.5rem; }
+  .footer-sep { width:20px; height:1px; }
   .entry-content, .transition-content, .epilogue-content, .closing-content { padding:0 1.5rem; }
 }
 @media(max-width:600px) {
   .main-title { letter-spacing:.08em; }
   .poster-image-wrap img { max-height:36vh; }
   .docs-tabs { gap:1.5rem; flex-wrap:wrap; }
+  .footer-link { font-size:.7rem; letter-spacing:.15em; }
 }
 </style>
 </head>
@@ -258,11 +277,16 @@ img { display:block; max-width:100%; }
   <div class="dot" data-step="13" title="Closing"></div>
 </nav>
 
-<button class="docs-trigger" id="docsTrigger">Project Documents</button>
-
-<div class="nav-controls" id="navControls">
-  <button class="nav-btn" id="btnPrev"><span class="arrow arrow-left">&#8592;</span> Back</button>
-  <button class="nav-btn" id="btnNext">Continue <span class="arrow arrow-right">&#8594;</span></button>
+<div class="footer-bar" id="footerBar">
+  <div class="footer-nav">
+    <button class="nav-btn" id="btnPrev"><span class="arrow arrow-left">&#8592;</span> Back</button>
+    <button class="nav-btn" id="btnNext">Continue <span class="arrow arrow-right">&#8594;</span></button>
+  </div>
+  <div class="footer-links">
+    <button class="footer-link" id="qaLink">Q&thinsp;&amp;&thinsp;A</button>
+    <div class="footer-sep"></div>
+    <button class="footer-link" id="docsLink">Project Documents</button>
+  </div>
 </div>
 
 <div class="step-container">
@@ -451,7 +475,7 @@ img { display:block; max-width:100%; }
 <!-- STEP 11: MIRROR -->
 <div class="step step-mirror" data-step="11">
   <div class="mirror-intro">
-    <p>Every portrait in this exhibition depicted someone else.</p>
+    <p>Every portrait in this project depicted someone else.</p>
     <p style="margin-top:.8rem">This one does not.</p>
   </div>
   <div class="mirror-frame" id="mirrorFrame">
@@ -476,7 +500,7 @@ img { display:block; max-width:100%; }
     <p>Across these images, authority changes its language. It moves from discipline to culture, from elegance to administration, from reassurance to inevitability. At no point does it require universal hatred or mass hysteria. It requires only repetition, legitimacy, and time.</p>
     <p>This project does not ask whether fascism is evil. It asks how it becomes acceptable.</p>
     <p>If the final image feels distant, impersonal, or inevitable, consider what preceded it. No single poster produced this outcome. Each made the next one possible.</p>
-    <p class="epi-close">The mirror this exhibition offers is not historical.<br>It is structural.</p>
+    <p class="epi-close">The mirror this project offers is not historical.<br>It is structural.</p>
     <p class="epi-question">The question it leaves you with is not <em>who believed</em>, but what was allowed to become normal.</p>
   </div>
 </div>
@@ -493,32 +517,31 @@ img { display:block; max-width:100%; }
 
 <!-- DOCS MODAL -->
 <div class="docs-modal" id="docsModal">
-<button class="docs-close" id="docsClose"><span>&#8592;</span> Return to Exhibition</button>
+<button class="docs-close" id="docsClose"><span>&#8592;</span> Return to Project</button>
 <div class="docs-modal-inner">
 <div class="docs-tabs">
 <button class="docs-tab active" data-tab="essay">Catalog Essay</button>
 <button class="docs-tab" data-tab="thesis">Curatorial Thesis</button>
-<button class="docs-tab" data-tab="qa">Q&thinsp;&amp;&thinsp;A</button>
 </div>
 <div class="docs-content active" id="tab-essay">
 <h2>When Power Stops Persuading</h2>
 <p>Fascism is often remembered through its excesses: mass rallies, uniforms, symbols, and violence. These images persist because they allow for moral clarity and historical distance. They suggest that fascism announces itself loudly, that it arrives already monstrous, and that its appeal lies in irrationality.</p>
-<p>This exhibition proposes a more disturbing interpretation.</p>
+<p>This project proposes a more disturbing interpretation.</p>
 <p>Fascism succeeds not by rejecting a society&#8217;s values, but by inhabiting them.</p>
 <p>Across Europe, women played essential roles in this process. They organized populations, shaped cultural legitimacy, normalized obedience, and translated ideology into everyday life. In some cases, they wielded institutional authority; in others, they provided aesthetic, moral, or social insulation for power. These roles were not peripheral. They were structural.</p>
 <p>The sequence of images in <em>Les femmes du fascisme</em> traces a progression from persuasion to inevitability. Authority begins as discipline&thinsp;&#8212; framed as service and virtue. It becomes culture&thinsp;&#8212; framed as refinement and modernity. It adopts elegance and discretion, allowing collaboration without declaration. It enters the domestic and administrative sphere, where obedience feels like care. Finally, it dispenses with persuasion altogether, reducing society to classification and optimization.</p>
 <p>The final image does not depict fanaticism. It depicts clarity.</p>
 <p>By the time ideology speaks in the language of biology and design, belief is no longer required. The system has already succeeded. What remains is maintenance.</p>
 <p>This progression challenges the assumption that fascism is sustained by hatred alone. Hatred may mobilize, but normalization sustains. The most durable authoritarian systems are those that do not feel authoritarian at all.</p>
-<p>The women depicted in this exhibition are not presented as anomalies. They are presented as evidence: that power does not always dominate from above, but circulates through culture, care, and legitimacy. When these domains align, violence becomes administrative rather than exceptional.</p>
-<p>The mirror this exhibition holds up is not historical nostalgia. It is structural warning.</p>
+<p>The women depicted in this project are not presented as anomalies. They are presented as evidence: that power does not always dominate from above, but circulates through culture, care, and legitimacy. When these domains align, violence becomes administrative rather than exceptional.</p>
+<p>The mirror this project holds up is not historical nostalgia. It is structural warning.</p>
 <p>The question it leaves unresolved is not whether fascism can return, but whether societies recognize it while it is still persuading&thinsp;&#8212; or only after it has stopped.</p>
 </div>
 <div class="docs-content" id="tab-thesis">
 <h2>Curatorial Thesis &amp; Ethical Position</h2>
 <h3>Project Overview</h3>
 <p><strong>Les femmes du fascisme</strong> is a visual and curatorial investigation into how fascist systems in Europe mobilized women to stabilize power across political, cultural, and domestic domains. The project spans Spain, Italy, France, and Germany, tracing a structural progression rather than a national comparison.</p>
-<p>The exhibition argues that fascism did not rely solely on coercion or mass hysteria. It embedded itself through legitimacy, taste, care, administration, and normalization&thinsp;&#8212; domains in which women played decisive roles.</p>
+<p>The project argues that fascism did not rely solely on coercion or mass hysteria. It embedded itself through legitimacy, taste, care, administration, and normalization&thinsp;&#8212; domains in which women played decisive roles.</p>
 <h3>Thesis</h3>
 <p>Fascism persists not because it is irrational, but because it is adaptive. Across different national contexts, authoritarian systems aligned themselves with preexisting values: morality and service; culture and refinement; elegance and discretion; domestic care and administration; biological inevitability.</p>
 <p>Women were central to these alignments. Whether as leaders, ideologues, collaborators, or symbolic figures, they translated authoritarian power into forms that felt ethical, modern, respectable, or necessary.</p>
@@ -530,29 +553,34 @@ img { display:block; max-width:100%; }
 <li><strong>Normalization (France &#8212; State)</strong>&thinsp;&#8212; Authority rendered administrative, domestic, and reassuring.</li>
 <li><strong>Consequence (Germany)</strong>&thinsp;&#8212; Authority reduced to optimization, classification, and permanence.</li>
 </ul>
-<p>The exhibition&#8217;s structure is cumulative. Each section does not contradict the previous one; it makes it functional.</p>
+<p>The project&#8217;s structure is cumulative. Each section does not contradict the previous one; it makes it functional.</p>
 <h3>Ethical Position</h3>
 <p>This project does not aestheticize fascism to rehabilitate it, nor does it caricature it to reassure the viewer. It deliberately adopts historical visual restraint to demonstrate how authoritarian power <em>looked when it worked</em>.</p>
-<p>By refusing sensationalism, the exhibition denies the viewer moral distance. The absence of explicit villains, slogans, or shock imagery is intentional. The goal is recognition, not outrage.</p>
+<p>By refusing sensationalism, the project denies the viewer moral distance. The absence of explicit villains, slogans, or shock imagery is intentional. The goal is recognition, not outrage.</p>
 <h3>Intended Impact</h3>
 <p>Visitors should leave with an understanding of fascism as a <em>system</em>, not a deviation; awareness of how ordinary values can be reorganized into authoritarian infrastructure; and discomfort rooted in familiarity rather than horror.</p>
 </div>
-<div class="docs-content" id="tab-qa">
-<h2>Questions &amp; Answers</h2>
-<div class="qa-list">
-<div class="qa-item"><button class="qa-question">What is the purpose of this exhibition?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Les femmes du fascisme examines how women participated in, legitimized, and normalized fascist systems in twentieth-century Europe. Rather than focusing on atrocities or leaders alone, the exhibition studies the conditions that allowed authoritarian power to function &#8212; cultural, moral, domestic, and administrative &#8212; and the roles women played within those structures.</p><p>The project is not about assigning novelty or exceptionality to women&#8217;s involvement. It is about recognizing how power operates through everyday legitimacy.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">Is this exhibition arguing that women were responsible for fascism?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>No. The exhibition does not isolate women as uniquely culpable, nor does it frame them as passive victims. It examines women as participants within broader systems of power, in roles that were often decisive precisely because they appeared non-threatening, moral, or apolitical.</p><p>The exhibition&#8217;s argument is structural, not accusatory.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">Why focus on aesthetics and restraint rather than explicit violence or brutality?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Because fascism does not begin with brutality. It begins with persuasion, normalization, and legitimacy.</p><p>By adopting the visual languages fascist systems used when they were effective &#8212; discipline, elegance, care, culture &#8212; the exhibition reveals how authority looked before it required force. This approach avoids sensationalism and prevents viewers from distancing themselves emotionally from the subject.</p><p>The absence of violence is not denial; it is diagnosis.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">Some viewers may feel the imagery risks aestheticizing fascism. How do you respond?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Aestheticization becomes a problem when it obscures power or rehabilitates ideology. This exhibition does the opposite: it shows how aesthetics were instrumental to fascism&#8217;s success.</p><p>By refusing parody or exaggeration, the work denies viewers the comfort of ridicule. The images are unsettling precisely because they are coherent, restrained, and historically grounded. That discomfort is intentional and necessary.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">Why does the exhibition progress from individuals to abstraction?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>The structure reflects how authoritarian systems evolve.</p><p>The exhibition begins with identifiable figures and roles &#8212; discipline, culture, collaboration &#8212; and moves toward normalization and finally consequence. As the system matures, individual belief becomes less relevant. What remains is infrastructure.</p><p>The final image does not depict belief or persuasion. It depicts completion.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">Why does the exhibition end with Germany?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Germany represents not escalation, but resolution.</p><p>Placed at the end, it appears not as an anomaly or exception, but as the logical outcome of processes already normalized elsewhere. The exhibition resists the idea that fascism was uniquely German or historically isolated. Instead, it shows how similar mechanisms operate across contexts, adapting to local values.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">Is this exhibition meant to draw parallels to contemporary politics?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Viewers are encouraged to reflect on how normalization, cultural legitimacy, and administrative authority function in any era. The work does not instruct audiences what to think &#8212; it invites them to recognize patterns.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">How should visitors approach this exhibition emotionally?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>There is no prescribed emotional response.</p><p>The exhibition avoids shock, outrage, or catharsis. Instead, it encourages attentiveness. If visitors feel unsettled without being able to point to a single moment of rupture, that response reflects the exhibition&#8217;s thesis.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">What distinguishes this exhibition from traditional historical treatments of fascism?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Most treatments emphasize extremity, collapse, or violence. Les femmes du fascisme focuses on durability.</p><p>It examines how fascism functioned when it was stable, persuasive, and administratively ordinary &#8212; and how that stability depended on legitimacy transmitted through culture, care, and routine.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">What do you hope visitors take away from the exhibition?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>An understanding that authoritarian systems do not rely solely on coercion or fanaticism. They rely on alignment &#8212; with values people already trust.</p><p>The exhibition leaves visitors not with answers, but with a sharpened awareness of how power becomes acceptable.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">Is this exhibition intended as a warning?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>It is intended as a study.</p><p>Any warning emerges from recognition, not instruction.</p></div></div></div>
 </div></div>
-</div></div></div>
+
+<!-- Q&A MODAL -->
+<div class="qa-modal" id="qaModal">
+<button class="docs-close" id="qaClose"><span>&#8592;</span> Return to Project</button>
+<div class="docs-modal-inner">
+<h2 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:1.8rem; color:var(--text-primary); margin-bottom:2rem;">Questions &amp; Answers</h2>
+<div class="qa-list">
+<div class="qa-item"><button class="qa-question">What is the purpose of this project?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Les femmes du fascisme examines how women participated in, legitimized, and normalized fascist systems in twentieth-century Europe. Rather than focusing on atrocities or leaders alone, the project studies the conditions that allowed authoritarian power to function &#8212; cultural, moral, domestic, and administrative &#8212; and the roles women played within those structures.</p><p>The project is not about assigning novelty or exceptionality to women&#8217;s involvement. It is about recognizing how power operates through everyday legitimacy.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">Is this project arguing that women were responsible for fascism?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>No. The project does not isolate women as uniquely culpable, nor does it frame them as passive victims. It examines women as participants within broader systems of power, in roles that were often decisive precisely because they appeared non-threatening, moral, or apolitical.</p><p>The project&#8217;s argument is structural, not accusatory.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">Why focus on aesthetics and restraint rather than explicit violence or brutality?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Because fascism does not begin with brutality. It begins with persuasion, normalization, and legitimacy.</p><p>By adopting the visual languages fascist systems used when they were effective &#8212; discipline, elegance, care, culture &#8212; the project reveals how authority looked before it required force. This approach avoids sensationalism and prevents viewers from distancing themselves emotionally from the subject.</p><p>The absence of violence is not denial; it is diagnosis.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">Some viewers may feel the imagery risks aestheticizing fascism. How do you respond?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Aestheticization becomes a problem when it obscures power or rehabilitates ideology. This project does the opposite: it shows how aesthetics were instrumental to fascism&#8217;s success.</p><p>By refusing parody or exaggeration, the work denies viewers the comfort of ridicule. The images are unsettling precisely because they are coherent, restrained, and historically grounded. That discomfort is intentional and necessary.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">Why does the project progress from individuals to abstraction?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>The structure reflects how authoritarian systems evolve.</p><p>The project begins with identifiable figures and roles &#8212; discipline, culture, collaboration &#8212; and moves toward normalization and finally consequence. As the system matures, individual belief becomes less relevant. What remains is infrastructure.</p><p>The final image does not depict belief or persuasion. It depicts completion.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">Why does the project end with Germany?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Germany represents not escalation, but resolution.</p><p>Placed at the end, it appears not as an anomaly or exception, but as the logical outcome of processes already normalized elsewhere. The project resists the idea that fascism was uniquely German or historically isolated. Instead, it shows how similar mechanisms operate across contexts, adapting to local values.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">Is this project meant to draw parallels to contemporary politics?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Viewers are encouraged to reflect on how normalization, cultural legitimacy, and administrative authority function in any era. The work does not instruct audiences what to think &#8212; it invites them to recognize patterns.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">How should visitors approach this project emotionally?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>There is no prescribed emotional response.</p><p>The project avoids shock, outrage, or catharsis. Instead, it encourages attentiveness. If visitors feel unsettled without being able to point to a single moment of rupture, that response reflects the project&#8217;s thesis.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">What distinguishes this project from traditional historical treatments of fascism?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Most treatments emphasize extremity, collapse, or violence. Les femmes du fascisme focuses on durability.</p><p>It examines how fascism functioned when it was stable, persuasive, and administratively ordinary &#8212; and how that stability depended on legitimacy transmitted through culture, care, and routine.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">What do you hope visitors take away from the project?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>An understanding that authoritarian systems do not rely solely on coercion or fanaticism. They rely on alignment &#8212; with values people already trust.</p><p>The project leaves visitors not with answers, but with a sharpened awareness of how power becomes acceptable.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">Is this project intended as a warning?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>It is intended as a study.</p><p>Any warning emerges from recognition, not instruction.</p></div></div></div>
+</div>
+</div></div>
 
 <script>
 (function(){
@@ -567,7 +595,7 @@ var transitioning = false;
 
 var btnNext = $('#btnNext');
 var btnPrev = $('#btnPrev');
-var navControls = $('#navControls');
+var footerBar = $('#footerBar');
 var sideNav = $('#sideNav');
 var dots = $$('.side-nav .dot');
 
@@ -638,7 +666,7 @@ function goToStep(target, instant) {
 function updateUI() {
   btnPrev.classList.toggle('hidden', currentStep === 0);
   btnNext.classList.toggle('hidden', currentStep === totalSteps - 1);
-  navControls.classList.toggle('visible', currentStep > 0);
+  footerBar.classList.toggle('visible', currentStep > 0);
   sideNav.classList.toggle('visible', currentStep > 0);
 
   // Update side nav dots
@@ -693,8 +721,13 @@ dots.forEach(function(d){ d.addEventListener('click', function(){
 
 // Keyboard
 document.addEventListener('keydown', function(e) {
-  if($('#docsModal').classList.contains('open')) {
-    if(e.key === 'Escape') { $('#docsModal').classList.remove('open'); }
+  var dm=$('#docsModal'), qm=$('#qaModal');
+  if(dm.classList.contains('open')) {
+    if(e.key === 'Escape') { dm.classList.remove('open'); }
+    return;
+  }
+  if(qm.classList.contains('open')) {
+    if(e.key === 'Escape') { qm.classList.remove('open'); }
     return;
   }
   if(e.key === 'ArrowRight' || e.key === 'ArrowDown') {
@@ -729,8 +762,8 @@ if(mfr) mfr.addEventListener('mousemove', function(e) {
 });
 
 // Docs modal
-var dt=$('#docsTrigger'),dm=$('#docsModal'),dc=$('#docsClose');
-if(dt) dt.addEventListener('click', function(){ dm.classList.add('open'); });
+var dm=$('#docsModal'),dc=$('#docsClose');
+$('#docsLink').addEventListener('click', function(){ dm.classList.add('open'); });
 if(dc) dc.addEventListener('click', function(){ dm.classList.remove('open'); });
 $$('.docs-tab').forEach(function(t){ t.addEventListener('click', function(){
   $$('.docs-tab').forEach(function(x){x.classList.remove('active');});
@@ -738,9 +771,11 @@ $$('.docs-tab').forEach(function(t){ t.addEventListener('click', function(){
   t.classList.add('active');
   var c=$('#tab-'+t.dataset.tab); if(c) c.classList.add('active');
 });});
-document.addEventListener('keydown', function(e){
-  if(e.key==='Escape'&&dm.classList.contains('open')){dm.classList.remove('open');}
-});
+
+// Q&A modal
+var qm=$('#qaModal'),qc=$('#qaClose');
+$('#qaLink').addEventListener('click', function(){ qm.classList.add('open'); });
+if(qc) qc.addEventListener('click', function(){ qm.classList.remove('open'); });
 
 // Q&A
 $$('.qa-question').forEach(function(btn){ btn.addEventListener('click', function(){
