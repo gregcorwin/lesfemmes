@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.lesfemmes.io"
+        }
+      ],
+      "destination": "https://lesfemmes.io/$1",
+      "permanent": true
+    }
+  ]
+}
