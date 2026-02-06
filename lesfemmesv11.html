@@ -1,21 +1,9 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Les Femmes du Fascisme — A Project</title>
-<meta name="description" content="Les Femmes du Fascisme is a visual and curatorial exhibition on how fascist systems mobilized women through discipline, culture, and normalization across twentieth-century Europe.">
-<link rel="canonical" href="https://lesfemmes.io/">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' rx='16' fill='%23050404'/%3E%3Ctext x='50%25' y='58%25' font-family='Cormorant Garamond,Georgia,serif' font-size='44' text-anchor='middle' fill='%23b89d6a'%3ELF%3C/text%3E%3C/svg%3E">
-<meta property="og:title" content="Les Femmes du Fascisme — A Project">
-<meta property="og:description" content="A visual and curatorial exhibition on how fascist systems mobilized women through discipline, culture, and normalization across twentieth-century Europe.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://lesfemmes.io/">
-<meta property="og:image" content="https://lesfemmes.io/poster01.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Les Femmes du Fascisme — A Project">
-<meta name="twitter:description" content="A visual and curatorial exhibition on how fascist systems mobilized women through discipline, culture, and normalization across twentieth-century Europe.">
-<meta name="twitter:image" content="https://lesfemmes.io/poster01.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
@@ -31,10 +19,10 @@
   --ease-elegant: cubic-bezier(0.22, 1, 0.36, 1);
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; overflow-x:hidden; background:var(--bg-void); }
-body { font-family:'EB Garamond','Georgia',serif; color:var(--text-primary); background:var(--bg-void); overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+html { background:var(--bg-void); overflow:hidden; height:100%; }
+body { font-family:'EB Garamond','Georgia',serif; color:var(--text-primary); background:var(--bg-void); overflow:hidden; height:100%; -webkit-font-smoothing:antialiased; }
 ::-webkit-scrollbar { width:2px; }
-::-webkit-scrollbar-track { background:var(--bg-void); }
+::-webkit-scrollbar-track { background:rgba(5,4,4,.5); }
 ::-webkit-scrollbar-thumb { background:var(--text-muted); }
 img { display:block; max-width:100%; }
 
@@ -42,58 +30,101 @@ img { display:block; max-width:100%; }
 .grain-overlay::before { content:''; position:absolute; inset:-100%; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); background-size:200px; animation:gs .4s steps(1) infinite; }
 @keyframes gs { 0%{transform:translate(0,0)} 25%{transform:translate(-5%,-5%)} 50%{transform:translate(5%,3%)} 75%{transform:translate(-3%,5%)} }
 
+/* STEP CONTAINER */
+.step-container { position:fixed; inset:0; }
+.step {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition: opacity 0.9s var(--ease-elegant), transform 0.9s var(--ease-elegant);
+  transform: translateY(20px);
+  will-change: opacity, transform;
+}
+.step.active {
+  opacity:1; visibility:visible; pointer-events:auto;
+  transform: translateY(0);
+}
+
+/* SIDE NAV */
 .side-nav { position:fixed; left:1.5vw; top:50%; transform:translateY(-50%); z-index:100; display:flex; flex-direction:column; gap:12px; opacity:0; transition:opacity .8s ease; }
 .side-nav.visible { opacity:1; }
 .side-nav .dot { width:6px; height:6px; border-radius:50%; background:var(--text-muted); transition:all .5s var(--ease-elegant); cursor:pointer; }
 .side-nav .dot:hover { background:var(--text-secondary); }
 .side-nav .dot.active { background:var(--accent-gold); box-shadow:0 0 8px rgba(184,157,106,0.4); transform:scale(1.4); }
 
-.scroll-cue { position:absolute; bottom:4vh; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:10px; opacity:0; animation:ca 1s ease 2s forwards; }
-.scroll-cue span { font-family:'Cormorant Garamond',serif; font-size:.85rem; letter-spacing:.3em; text-transform:uppercase; color:var(--text-muted); }
-.scroll-cue .cue-line { width:1px; height:0; background:var(--text-muted); animation:lg 2s ease 2.5s forwards, lp 3s ease-in-out 4.5s infinite; }
-@keyframes ca { to { opacity:1 } }
-@keyframes lg { to { height:40px } }
-@keyframes lp { 0%,100%{opacity:.4} 50%{opacity:.8} }
+/* NAV CONTROLS */
+.nav-controls { position:fixed; bottom:4vh; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:center; gap:3rem; pointer-events:none; opacity:0; transition:opacity .6s ease; }
+.nav-controls.visible { opacity:1; }
+.nav-btn {
+  pointer-events:auto; font-family:'Cormorant Garamond',serif; font-size:.85rem;
+  letter-spacing:.3em; text-transform:uppercase; color:var(--text-muted);
+  background:none; border:none; cursor:pointer; padding:.8rem 1.5rem;
+  transition:all .5s ease; display:flex; align-items:center; gap:.8rem;
+}
+.nav-btn:hover { color:var(--accent-gold); }
+.nav-btn.hidden { opacity:0; pointer-events:none; }
+.nav-btn .arrow { font-size:1.1rem; transition:transform .3s ease; }
+.nav-btn:hover .arrow-right { transform:translateX(4px); }
+.nav-btn:hover .arrow-left { transform:translateX(-4px); }
 
 /* ENTRANCE */
-.entrance { height:180vh; position:relative; background:var(--bg-void); }
-.entrance-sticky { position:sticky; top:0; height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden; }
-.entrance-portal { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:6vh 6vw; }
-.entrance-walls { position:absolute; inset:0; border:40vh solid var(--bg-void); transition:border-width .05s linear; pointer-events:none; }
+.step-entrance { background:var(--bg-void); }
+.entrance-walls { position:absolute; inset:0; border:40vh solid var(--bg-void); transition:border-width 1.8s var(--ease-elegant); pointer-events:none; }
+.entrance-walls.open { border-width:0; }
 .entrance-glow { position:absolute; inset:0; background:radial-gradient(ellipse at 50% 45%,rgba(180,150,100,.08) 0%,transparent 60%); pointer-events:none; }
 .entrance-lines { position:absolute; inset:0; pointer-events:none; }
 .entrance-lines::before,.entrance-lines::after { content:''; position:absolute; background:rgba(180,157,106,.06); }
 .entrance-lines::before { top:12%; left:50%; transform:translateX(-50%); width:40%; height:1px; }
 .entrance-lines::after { bottom:12%; left:50%; transform:translateX(-50%); width:40%; height:1px; }
 .main-title { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(2.5rem,6vw,5.5rem); letter-spacing:.15em; text-align:center; color:var(--text-primary); line-height:1.2; opacity:0; animation:tr 2.5s ease .5s forwards; }
-.main-subtitle { font-family:'Cormorant Garamond',serif; font-weight:300; font-style:italic; font-size:clamp(1rem,1.6vw,1.3rem); letter-spacing:.4em; text-transform:uppercase; color:var(--text-muted); margin-top:2vh; opacity:0; animation:tr 2s ease 1.8s forwards; }
+.main-subtitle { font-family:'Cormorant Garamond',serif; font-weight:300; font-style:italic; font-size:clamp(1rem,1.6vw,1.3rem); letter-spacing:.4em; text-transform:uppercase; color:var(--text-muted); margin-top:2vh; opacity:0; animation:tr 2s ease 1.8s forwards; text-align:center; width:100%; }
 .title-line { width:60px; height:1px; background:var(--accent-gold); margin:2.5vh auto 0; opacity:0; animation:tr 1.5s ease 1.3s forwards; }
 @keyframes tr { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
+.start-btn {
+  position:absolute; bottom:10vh; left:50%; transform:translateX(-50%);
+  font-family:'Cormorant Garamond',serif; font-size:.9rem;
+  letter-spacing:.4em; text-transform:uppercase;
+  color:var(--text-muted); background:none;
+  border:1px solid rgba(94,83,69,.4);
+  padding:1.2rem 3.5rem; cursor:pointer;
+  transition:all .6s ease;
+  opacity:0; animation:ca 1s ease 2.5s forwards;
+}
+.start-btn:hover { color:var(--text-primary); border-color:var(--accent-gold); letter-spacing:.5em; }
+@keyframes ca { to { opacity:1 } }
+
 /* ENTRY PANEL */
-.entry-panel { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:10vh 5vw; background:var(--bg-gallery); }
-.entry-content { max-width:680px; opacity:0; transform:translateY(30px); transition:all 1.2s var(--ease-elegant); }
-.entry-content.visible { opacity:1; transform:translateY(0); }
+.step-entry { background:var(--bg-gallery); }
+.entry-content { max-width:740px; padding:0 2rem; }
 .entry-content .section-label { font-family:'Cormorant Garamond',serif; font-size:.9rem; letter-spacing:.5em; text-transform:uppercase; color:var(--text-secondary); margin-bottom:3vh; }
 .entry-content h2 { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(1.8rem,3.5vw,2.8rem); color:var(--text-primary); margin-bottom:3vh; line-height:1.3; letter-spacing:.04em; }
 .entry-content p { font-size:1.22rem; line-height:1.85; color:var(--text-secondary); margin-bottom:1.5rem; }
 .entry-content .entry-emphasis { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.38rem; color:var(--text-primary); line-height:1.7; margin-top:2.5rem; padding-left:1.5rem; border-left:1px solid var(--accent-gold); }
 
-/* POSTER ROOMS */
-.poster-room { height:350vh; position:relative; background:var(--bg-gallery); }
-.poster-sticky { position:absolute; top:0; left:0; right:0; height:100vh; overflow:hidden; }
-.poster-inner { position:absolute; inset:0; will-change:transform; }
-.poster-image-wrap { position:absolute; top:50%; left:36%; transform:translate(-50%,-50%); opacity:0; will-change:opacity; z-index:2; }
-.poster-image-wrap img { max-height:76vh; width:auto; box-shadow:0 8px 60px rgba(0,0,0,.7),0 0 120px rgba(150,130,100,.04); }
+/* POSTER STEPS */
+.step-poster { background:var(--bg-gallery); }
+.poster-layout { position:absolute; inset:0; display:flex; align-items:center; }
 .poster-spotlight { position:absolute; top:50%; left:36%; transform:translate(-50%,-50%); width:40vw; height:80vh; background:radial-gradient(ellipse,rgba(180,150,100,.03) 0%,transparent 70%); pointer-events:none; z-index:1; }
-.wall-text-panel { position:absolute; top:50%; left:56%; transform:translateY(-50%); width:min(34vw,500px); max-height:78vh; overflow:hidden; opacity:0; z-index:3; padding-right:1rem; will-change:opacity,transform; }
-.wall-text-panel .wt-scroll-inner { will-change:transform; }
+.poster-image-wrap {
+  position:absolute; top:50%; left:36%; transform:translate(-50%,-50%);
+  opacity:0; z-index:2;
+  transition:opacity 1.2s var(--ease-elegant);
+}
+.step-poster.active .poster-image-wrap { opacity:1; }
+.poster-image-wrap img { max-height:76vh; width:auto; box-shadow:0 8px 60px rgba(0,0,0,.7),0 0 120px rgba(150,130,100,.04); }
+
+.wall-text-panel {
+  position:absolute; top:50%; left:56%; transform:translateY(-50%) translateX(40px);
+  width:min(34vw,500px); max-height:78vh; overflow-y:auto;
+  opacity:0; z-index:3; padding-right:1rem;
+  transition:opacity 1s var(--ease-elegant), transform 1s var(--ease-elegant);
+}
+/* Wall text only appears when text-revealed class is added */
+.step-poster.text-revealed .wall-text-panel {
+  opacity:1; transform:translateY(-50%) translateX(0);
+}
 .wall-text-panel::-webkit-scrollbar { width:1px; }
 .wall-text-panel::-webkit-scrollbar-thumb { background:var(--text-muted); }
-
-.view-text-prompt { position:absolute; bottom:5vh; left:50%; transform:translateX(-50%); font-family:'Cormorant Garamond',serif; font-size:.9rem; letter-spacing:.3em; text-transform:uppercase; color:var(--text-bright); opacity:0; transition:opacity .8s ease; z-index:5; }
-.poster-room.entered:not(.revealed) .view-text-prompt { opacity:1; animation:lp 3s ease-in-out infinite; }
-.poster-room.revealed .view-text-prompt { opacity:0; }
 
 /* WALL TEXT */
 .wt-name { font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(1.5rem,2.2vw,2rem); color:var(--accent-gold); margin-bottom:.4rem; letter-spacing:.03em; }
@@ -107,9 +138,8 @@ img { display:block; max-width:100%; }
 .wt-divider { width:30px; height:1px; background:var(--accent-gold); opacity:.4; margin:1.5rem 0; }
 
 /* TRANSITIONS */
-.transition-panel { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:10vh 5vw; background:var(--bg-void); }
-.transition-content { max-width:640px; text-align:center; opacity:0; transform:translateY(25px); transition:all 1.2s var(--ease-elegant); }
-.transition-content.visible { opacity:1; transform:translateY(0); }
+.step-transition { background:var(--bg-void); }
+.transition-content { max-width:740px; text-align:center; padding:0 2rem; }
 .transition-label { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(1.4rem,2.5vw,2.1rem); letter-spacing:.08em; color:var(--text-primary); margin-bottom:.6rem; }
 .transition-route { font-family:'EB Garamond',serif; font-style:italic; font-size:1.15rem; color:var(--text-secondary); letter-spacing:.12em; margin-bottom:3.5vh; }
 .transition-quote { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.35rem; line-height:1.8; color:var(--text-secondary); margin-bottom:2.5vh; }
@@ -118,12 +148,9 @@ img { display:block; max-width:100%; }
 .transition-line { width:40px; height:1px; background:var(--accent-gold); opacity:.3; margin:2rem auto; }
 
 /* MIRROR */
-.mirror-section { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8vh 5vw; background:var(--bg-void); }
-.mirror-intro { text-align:center; margin-bottom:4vh; opacity:0; transform:translateY(20px); transition:all 1.2s var(--ease-elegant); }
-.mirror-intro.visible { opacity:1; transform:translateY(0); }
-.mirror-intro p { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(1.1rem,1.8vw,1.4rem); color:var(--text-secondary); line-height:1.8; }
-.mirror-frame { position:relative; width:min(420px,60vw); aspect-ratio:2/3; border:1px solid rgba(184,157,106,.15); box-shadow:0 8px 60px rgba(0,0,0,.7),0 0 120px rgba(150,130,100,.04),inset 0 0 60px rgba(0,0,0,.5); overflow:hidden; background:#080706; opacity:0; transform:scale(.95); transition:all 1.4s var(--ease-elegant) .5s; }
-.mirror-frame.visible { opacity:1; transform:scale(1); }
+.step-mirror { background:var(--bg-void); flex-direction:column; gap:2.5vh; padding-bottom:10vh; }
+.mirror-intro p { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(1rem,1.5vw,1.3rem); color:var(--text-secondary); line-height:1.8; text-align:center; }
+.mirror-frame { position:relative; width:min(260px,40vw); aspect-ratio:2/3; border:1px solid rgba(184,157,106,.15); box-shadow:0 8px 60px rgba(0,0,0,.7),0 0 120px rgba(150,130,100,.04),inset 0 0 60px rgba(0,0,0,.5); overflow:hidden; background:#080706; flex-shrink:0; }
 #mirrorVideo { width:100%; height:100%; object-fit:cover; transform:scaleX(-1); filter:sepia(.6) contrast(1.05) brightness(.82) saturate(.65); opacity:0; transition:opacity 2s ease; }
 #mirrorVideo.active { opacity:1; }
 .mirror-grain { position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E"); background-size:150px; opacity:.12; mix-blend-mode:overlay; pointer-events:none; z-index:2; }
@@ -134,25 +161,23 @@ img { display:block; max-width:100%; }
 .mirror-fallback { position:absolute; inset:0; display:none; align-items:center; justify-content:center; z-index:4; }
 .mirror-fallback.active { display:flex; }
 .mirror-fallback-inner { position:absolute; inset:0; background:radial-gradient(ellipse at var(--mx,50%) var(--my,50%),rgba(80,70,50,.08) 0%,transparent 50%); transition:background .3s ease; }
-.mirror-fallback p { position:relative; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.25rem; color:var(--text-muted); text-align:center; padding:2rem; line-height:1.7; z-index:1; }
-.mirror-caption { margin-top:4vh; text-align:center; opacity:0; transition:opacity 1.5s ease 1s; }
+.mirror-fallback p { position:relative; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.15rem; color:var(--text-muted); text-align:center; padding:1.5rem; line-height:1.7; z-index:1; }
+.mirror-caption { margin-top:1.5vh; text-align:center; opacity:0; transition:opacity 1.5s ease 1s; }
 .mirror-caption.visible { opacity:1; }
-.mirror-caption p { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(1.3rem,2vw,1.7rem); color:var(--text-secondary); line-height:1.7; }
+.mirror-caption p { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(1.1rem,1.6vw,1.4rem); color:var(--text-secondary); line-height:1.7; }
 .mirror-caption strong { color:var(--accent-gold); font-weight:500; }
 
 /* EPILOGUE */
-.epilogue { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:10vh 5vw; background:var(--bg-void); }
-.epilogue-content { max-width:660px; opacity:0; transform:translateY(25px); transition:all 1.4s var(--ease-elegant); }
-.epilogue-content.visible { opacity:1; transform:translateY(0); }
+.step-epilogue { background:var(--bg-void); }
+.epilogue-content { max-width:740px; padding:0 2rem; }
 .epilogue-content .epi-lead { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(1.3rem,2vw,1.6rem); color:var(--text-secondary); line-height:1.8; margin-bottom:2.5rem; }
 .epilogue-content p { font-family:'EB Garamond',serif; font-size:1.22rem; line-height:1.85; color:var(--text-secondary); margin-bottom:1.5rem; }
 .epilogue-content .epi-close { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.35rem; color:var(--text-primary); line-height:1.8; margin-top:2rem; }
 .epilogue-content .epi-question { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:1.35rem; color:var(--accent-gold); margin-top:2.5rem; line-height:1.7; }
 
 /* CLOSING */
-.closing-page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:10vh 5vw; background:var(--bg-void); }
-.closing-content { max-width:700px; text-align:center; opacity:0; transform:translateY(20px); transition:all 1.8s var(--ease-elegant); }
-.closing-content.visible { opacity:1; transform:translateY(0); }
+.step-closing { background:var(--bg-void); }
+.closing-content { max-width:740px; text-align:center; padding:0 2rem; }
 .closing-content p { font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(1.4rem,2.5vw,2rem); color:var(--text-primary); line-height:1.8; }
 .closing-content p+p { margin-top:1.5rem; color:var(--text-secondary); }
 
@@ -194,79 +219,281 @@ img { display:block; max-width:100%; }
 .qa-answer-inner p { font-family:'EB Garamond',serif; font-size:1.15rem; line-height:1.85; color:var(--text-secondary); margin-bottom:.8rem; }
 .qa-answer-inner p:last-child { margin-bottom:0; }
 
-.section-divider { height:1px; background:linear-gradient(to right,transparent,rgba(184,157,106,.08),transparent); }
-.fade-observe { opacity:0; transform:translateY(20px); transition:all 1.2s var(--ease-elegant); }
-.fade-observe.visible { opacity:1; transform:translateY(0); }
+/* SCROLLABLE TEXT STEPS */
+.scrollable-text-step { overflow-y:auto; align-items:flex-start; padding:12vh 0; }
 
+/* RESPONSIVE */
 @media(max-width:1000px) {
-  .poster-image-wrap img { max-height:48vh; }
-  .wall-text-panel { left:5vw!important; top:auto!important; bottom:2vh; transform:none!important; width:90vw!important; max-height:35vh; }
-  .poster-room { height:380vh; }
+  .poster-image-wrap { left:50%!important; top:28%!important; }
+  .poster-image-wrap img { max-height:42vh; }
+  .wall-text-panel { left:5vw!important; top:auto!important; bottom:2vh!important; transform:none!important; width:90vw!important; max-height:38vh; }
+  .step-poster.text-revealed .wall-text-panel { transform:none!important; }
   .poster-spotlight { display:none; }
-  .view-text-prompt { display:none; }
   .side-nav { display:none; }
-  .mirror-frame { width:min(320px,80vw); }
+  .mirror-frame { width:min(200px,60vw); }
   .entrance-walls { border-width:25vh; }
+  .nav-controls { bottom:1.5vh; }
+  .entry-content, .transition-content, .epilogue-content, .closing-content { padding:0 1.5rem; }
 }
 @media(max-width:600px) {
   .main-title { letter-spacing:.08em; }
-  .poster-image-wrap img { max-height:40vh; }
+  .poster-image-wrap img { max-height:36vh; }
   .docs-tabs { gap:1.5rem; flex-wrap:wrap; }
 }
 </style>
 </head>
 <body>
 <div class="grain-overlay"></div>
+
 <nav class="side-nav" id="sideNav">
-  <div class="dot" data-target="entrance" title="Entrance"></div>
-  <div class="dot" data-target="entry" title="Entry Panel"></div>
-  <div class="dot" data-target="poster1" title="Spain"></div>
-  <div class="dot" data-target="poster2" title="Italy"></div>
-  <div class="dot" data-target="poster3" title="France"></div>
-  <div class="dot" data-target="poster4" title="Vichy"></div>
-  <div class="dot" data-target="poster5" title="Germany"></div>
-  <div class="dot" data-target="mirror" title="Mirror"></div>
-  <div class="dot" data-target="epilogue" title="Epilogue"></div>
-  <div class="dot" data-target="closing" title="Closing"></div>
+  <div class="dot" data-step="0" title="Entrance"></div>
+  <div class="dot" data-step="1" title="Entry Panel"></div>
+  <div class="dot" data-step="2" title="Spain"></div>
+  <div class="dot" data-step="4" title="Italy"></div>
+  <div class="dot" data-step="6" title="France"></div>
+  <div class="dot" data-step="8" title="Vichy"></div>
+  <div class="dot" data-step="10" title="Germany"></div>
+  <div class="dot" data-step="11" title="Mirror"></div>
+  <div class="dot" data-step="12" title="Epilogue"></div>
+  <div class="dot" data-step="13" title="Closing"></div>
 </nav>
+
 <button class="docs-trigger" id="docsTrigger">Project Documents</button>
 
-<section class="entrance" id="entrance"><div class="entrance-sticky"><div class="entrance-walls" id="entranceWalls"></div><div class="entrance-glow"></div><div class="entrance-lines"></div><div class="entrance-portal"><h1 class="main-title">LES FEMMES<br>DU FASCISME</h1><div class="title-line"></div><p class="main-subtitle">A Project</p></div><div class="scroll-cue"><span>Enter</span><div class="cue-line"></div></div></div></section>
-<div class="section-divider"></div>
+<div class="nav-controls" id="navControls">
+  <button class="nav-btn" id="btnPrev"><span class="arrow arrow-left">&#8592;</span> Back</button>
+  <button class="nav-btn" id="btnNext">Continue <span class="arrow arrow-right">&#8594;</span></button>
+</div>
 
-<section class="entry-panel" id="entry"><div class="entry-content fade-observe"><div class="section-label">Entry Panel</div><h2>Les Femmes du Fascisme</h2><p>This project examines the roles women played in the construction, normalization, and endurance of European fascist movements in the twentieth century.</p><p>Rather than focusing on leaders alone, it traces how authoritarian systems relied on women as organizers, cultural architects, moral authorities, symbols of legitimacy, and agents of normalization. In these roles, women were not exceptions to fascism, nor merely its victims. They were integral to how it functioned.</p><p>The images presented here adopt the visual languages of their time: discipline, elegance, care, culture, and order. They do not announce themselves as critiques. They mirror how fascism represented itself when it was persuasive, effective, and widely accepted.</p><div class="entry-emphasis">This project does not ask whether fascism was extreme.<br>It asks how it came to feel reasonable.<br><br>What follows is not a chronology of atrocities, but a study of <em>conditions</em>&thinsp;— the social, cultural, and moral arrangements that allowed those atrocities to become possible.</div></div></section>
-<div class="section-divider"></div>
+<div class="step-container">
 
-<section class="poster-room" id="poster1" data-index="1"><div class="poster-sticky"><div class="poster-spotlight"></div><div class="poster-inner"><div class="poster-image-wrap"><img src="poster01.png" alt="Pilar Primo de Rivera"></div><div class="wall-text-panel"><h3 class="wt-name">Pilar Primo de Rivera</h3><div class="wt-subtitle">Spain, 1934–1977</div><div class="wt-role">Founder and National Leader, Sección Femenina</div><div class="wt-slogan">“To serve is to command”</div><div class="wt-thesis">Fascism did not exclude women from power.<br>It redefined power in terms that made women indispensable to its survival.</div><p class="wt-body">Pilar Primo de Rivera led the Sección Femenina, the women’s branch of Spain’s Falange, for more than four decades. Under her authority, millions of women were trained, disciplined, and monitored in the name of service, morality, and national regeneration. Obedience was framed not as submission, but as virtue. Domestic labor became civic duty. Self-denial became patriotism.</p><p class="wt-body">The slogan <em>“Servir es mandar”</em>&thinsp;— to serve is to command&thinsp;— captures a central paradox of authoritarian systems: authority is most durable when it convinces individuals that compliance is empowerment. Primo de Rivera wielded genuine institutional power while promoting a doctrine that denied women political agency. This contradiction was not incidental; it was structural.</p><div class="wt-divider"></div><p class="wt-poetic">This poster does not depict a victim.<br>It depicts a function.</p></div></div><div class="view-text-prompt">Scroll to view wall text</div></div></section>
+<!-- STEP 0: ENTRANCE -->
+<div class="step step-entrance active" data-step="0" id="stepEntrance">
+  <div class="entrance-walls" id="entranceWalls"></div>
+  <div class="entrance-glow"></div>
+  <div class="entrance-lines"></div>
+  <div class="entrance-portal">
+    <h1 class="main-title">LES FEMMES<br>DU FASCISME</h1>
+    <div class="title-line"></div>
+    <p class="main-subtitle">A Project</p>
+  </div>
+  <button class="start-btn" id="startBtn">Begin</button>
+</div>
 
-<section class="transition-panel"><div class="transition-content fade-observe"><div class="transition-label">From Command to Taste</div><div class="transition-route">Spain → Italy &ensp;·&ensp; Discipline → Culture</div><div class="transition-line"></div><div class="transition-quote">Fascist power does not move in a straight line.<br>It adapts to whatever a society already trusts.</div><p class="transition-body">In Spain, authority was built through discipline, morality, and service. In Italy, it was cultivated through taste, culture, and modernity.</p><p class="transition-body">These images do not contradict one another. They complete one another.</p><p class="transition-body">Authoritarian systems endure not only by commanding obedience, but by shaping aspiration&thinsp;— deciding what is respectable, what is refined, and what feels inevitable. When power can alternate between command and culture, resistance becomes fragmented: what one person rejects as coercion, another accepts as sophistication.</p><p class="transition-close">What follows is not escalation.<br>It is variation.</p></div></section>
-<div class="section-divider"></div>
+<!-- STEP 1: ENTRY PANEL -->
+<div class="step step-entry scrollable-text-step" data-step="1">
+  <div class="entry-content">
+    <div class="section-label">Entry Panel</div>
+    <h2>Les Femmes du Fascisme</h2>
+    <p>This project examines the roles women played in the construction, normalization, and endurance of European fascist movements in the twentieth century.</p>
+    <p>Rather than focusing on leaders alone, it traces how authoritarian systems relied on women as organizers, cultural architects, moral authorities, symbols of legitimacy, and agents of normalization. In these roles, women were not exceptions to fascism, nor merely its victims. They were integral to how it functioned.</p>
+    <p>The images presented here adopt the visual languages of their time: discipline, elegance, care, culture, and order. They do not announce themselves as critiques. They mirror how fascism represented itself when it was persuasive, effective, and widely accepted.</p>
+    <div class="entry-emphasis">This project does not ask whether fascism was extreme.<br>It asks how it came to feel reasonable.<br><br>What follows is not a chronology of atrocities, but a study of <em>conditions</em>&thinsp;&#8212; the social, cultural, and moral arrangements that allowed those atrocities to become possible.</div>
+  </div>
+</div>
 
-<section class="poster-room" id="poster2" data-index="2"><div class="poster-sticky"><div class="poster-spotlight"></div><div class="poster-inner"><div class="poster-image-wrap"><img src="poster02.png" alt="Margherita Sarfatti"></div><div class="wall-text-panel"><h3 class="wt-name">Margherita Sarfatti</h3><div class="wt-subtitle">Italy, c. 1926–1938</div><div class="wt-role">Writer · Critic · Architect of Fascist Culture</div><div class="wt-slogan">“Art disciplines the nation”</div><div class="wt-thesis">Fascism does not rule by force alone.<br>It rules by deciding what is refined, modern, and inevitable.</div><p class="wt-body">Margherita Sarfatti was not a bureaucrat or a functionary. She was a cultural architect. A prominent art critic and intellectual, Sarfatti helped construct the aesthetic and ideological language of Italian Fascism, shaping how the regime presented itself to artists, elites, and the international public. She curated exhibitions, promoted modernist movements aligned with Fascist values, and authored the first major biography of Benito Mussolini, transforming political power into cultural legitimacy.</p><p class="wt-body">Where authoritarian systems rely on discipline to control bodies, they rely on culture to discipline taste. Sarfatti’s influence lay in defining what counted as modern, national, and serious. Under her guidance, Fascism did not appear merely coercive; it appeared cultivated.</p><div class="wt-divider"></div><p class="wt-poetic">This poster does not command.<br>It judges.</p><p class="wt-reflection">Placed beside images of overt authority, Sarfatti reveals a quieter mechanism of power: the normalization of ideology through elegance, intellect, and cultural authority. When power learns to speak fluently in the language of art, resistance becomes unsophisticated&thinsp;— and exclusion begins to feel like discernment.</p></div></div><div class="view-text-prompt">Scroll to view wall text</div></div></section>
+<!-- STEP 2: POSTER 1 (sub-step: poster alone, then text reveals) -->
+<div class="step step-poster" data-step="2">
+  <div class="poster-layout">
+    <div class="poster-spotlight"></div>
+    <div class="poster-image-wrap"><img src="poster01.png" alt="Pilar Primo de Rivera"></div>
+    <div class="wall-text-panel">
+      <h3 class="wt-name">Pilar Primo de Rivera</h3>
+      <div class="wt-subtitle">Spain, 1934&#8211;1977</div>
+      <div class="wt-role">Founder and National Leader, Secci&#243;n Femenina</div>
+      <div class="wt-slogan">&#8220;To serve is to command&#8221;</div>
+      <div class="wt-thesis">Fascism did not exclude women from power.<br>It redefined power in terms that made women indispensable to its survival.</div>
+      <p class="wt-body">Pilar Primo de Rivera led the Secci&#243;n Femenina, the women&#8217;s branch of Spain&#8217;s Falange, for more than four decades. Under her authority, millions of women were trained, disciplined, and monitored in the name of service, morality, and national regeneration. Obedience was framed not as submission, but as virtue. Domestic labor became civic duty. Self-denial became patriotism.</p>
+      <p class="wt-body">The slogan <em>&#8220;Servir es mandar&#8221;</em>&thinsp;&#8212; to serve is to command&thinsp;&#8212; captures a central paradox of authoritarian systems: authority is most durable when it convinces individuals that compliance is empowerment. Primo de Rivera wielded genuine institutional power while promoting a doctrine that denied women political agency. This contradiction was not incidental; it was structural.</p>
+      <div class="wt-divider"></div>
+      <p class="wt-poetic">This poster does not depict a victim.<br>It depicts a function.</p>
+    </div>
+  </div>
+</div>
 
-<section class="transition-panel"><div class="transition-content fade-observe"><div class="transition-label">From Taste to Proximity</div><div class="transition-route">Italy → France &ensp;·&ensp; Culture → Distance</div><div class="transition-line"></div><div class="transition-quote">Culture does not require loyalty to function.<br>It requires proximity.</div><p class="transition-body">In Italy, fascist power was cultivated through aesthetics, intellect, and modernity. Culture did not merely decorate authority; it disciplined taste and determined legitimacy. To belong was to appear correct.</p><p class="transition-body">But culture also offers a quieter advantage: it allows power to be approached without commitment.</p><p class="transition-body">What follows is not ideology, but adjacency. Not belief, but benefit. Fascism here does not ask to be endorsed. It asks only to be useful.</p><p class="transition-close">When authority becomes elegant, collaboration no longer needs conviction.<br>It needs access.</p></div></section>
-<div class="section-divider"></div>
+<!-- STEP 3: TRANSITION 1 -->
+<div class="step step-transition scrollable-text-step" data-step="3">
+  <div class="transition-content">
+    <div class="transition-label">From Command to Taste</div>
+    <div class="transition-route">Spain &#8594; Italy &ensp;&#183;&ensp; Discipline &#8594; Culture</div>
+    <div class="transition-line"></div>
+    <div class="transition-quote">Fascist power does not move in a straight line.<br>It adapts to whatever a society already trusts.</div>
+    <p class="transition-body">In Spain, authority was built through discipline, morality, and service. In Italy, it was cultivated through taste, culture, and modernity.</p>
+    <p class="transition-body">These images do not contradict one another. They complete one another.</p>
+    <p class="transition-body">Authoritarian systems endure not only by commanding obedience, but by shaping aspiration&thinsp;&#8212; deciding what is respectable, what is refined, and what feels inevitable. When power can alternate between command and culture, resistance becomes fragmented: what one person rejects as coercion, another accepts as sophistication.</p>
+    <p class="transition-close">What follows is not escalation.<br>It is variation.</p>
+  </div>
+</div>
 
-<section class="poster-room" id="poster3" data-index="3"><div class="poster-sticky"><div class="poster-spotlight"></div><div class="poster-inner"><div class="poster-image-wrap"><img src="poster03.png" alt="Coco Chanel"></div><div class="wall-text-panel"><h3 class="wt-name">Coco Chanel</h3><div class="wt-subtitle">France, 1940–1944</div><div class="wt-role">Designer · Cultural Figure · Collaborator</div><div class="wt-slogan">“Order is elegant”</div><div class="wt-thesis">Collaboration does not always announce itself as ideology.<br>Sometimes it presents itself as discretion.</div><p class="wt-body">During the German occupation of France, Coco Chanel resided at the Hôtel Ritz, a location reserved for senior German officers and collaborators. Her personal relationship with a German intelligence officer granted her protection, mobility, and access unavailable to most Parisians. While her fashion house remained closed during the war, Chanel actively pursued personal and financial interests, including attempts to reclaim control of her perfume business under antisemitic “Aryanization” laws imposed by the occupation.</p><p class="wt-body">Chanel did not speak publicly for fascism, nor did she organize on its behalf. Her collaboration operated through proximity rather than proclamation. She benefited from the conditions of occupation while maintaining aesthetic and social distance from the regime itself&thinsp;— a posture that allowed deniability without risk.</p><div class="wt-divider"></div><p class="wt-poetic">This poster does not depict belief.<br>It depicts alignment.</p><p class="wt-reflection">Placed alongside images of ideological conviction and institutional authority, Chanel represents a different mode of participation: collaboration as survival strategy, opportunism as neutrality, elegance as insulation. In such cases, power does not require loyalty&thinsp;— only usefulness.</p><p class="wt-poetic" style="margin-top:1rem">When order becomes profitable, silence becomes a position.</p></div></div><div class="view-text-prompt">Scroll to view wall text</div></div></section>
+<!-- STEP 4: POSTER 2 -->
+<div class="step step-poster" data-step="4">
+  <div class="poster-layout">
+    <div class="poster-spotlight"></div>
+    <div class="poster-image-wrap"><img src="poster02.png" alt="Margherita Sarfatti"></div>
+    <div class="wall-text-panel">
+      <h3 class="wt-name">Margherita Sarfatti</h3>
+      <div class="wt-subtitle">Italy, c. 1926&#8211;1938</div>
+      <div class="wt-role">Writer &#183; Critic &#183; Architect of Fascist Culture</div>
+      <div class="wt-slogan">&#8220;Art disciplines the nation&#8221;</div>
+      <div class="wt-thesis">Fascism does not rule by force alone.<br>It rules by deciding what is refined, modern, and inevitable.</div>
+      <p class="wt-body">Margherita Sarfatti was not a bureaucrat or a functionary. She was a cultural architect. A prominent art critic and intellectual, Sarfatti helped construct the aesthetic and ideological language of Italian Fascism, shaping how the regime presented itself to artists, elites, and the international public. She curated exhibitions, promoted modernist movements aligned with Fascist values, and authored the first major biography of Benito Mussolini, transforming political power into cultural legitimacy.</p>
+      <p class="wt-body">Where authoritarian systems rely on discipline to control bodies, they rely on culture to discipline taste. Sarfatti&#8217;s influence lay in defining what counted as modern, national, and serious. Under her guidance, Fascism did not appear merely coercive; it appeared cultivated.</p>
+      <div class="wt-divider"></div>
+      <p class="wt-poetic">This poster does not command.<br>It judges.</p>
+      <p class="wt-reflection">Placed beside images of overt authority, Sarfatti reveals a quieter mechanism of power: the normalization of ideology through elegance, intellect, and cultural authority. When power learns to speak fluently in the language of art, resistance becomes unsophisticated&thinsp;&#8212; and exclusion begins to feel like discernment.</p>
+    </div>
+  </div>
+</div>
 
-<section class="transition-panel"><div class="transition-content fade-observe"><div class="transition-label">From Distance to Normalization</div><div class="transition-route">Individual → State &ensp;·&ensp; Discretion → Administration</div><div class="transition-line"></div><div class="transition-quote">When collaboration no longer requires individuals, it becomes policy.</div><p class="transition-body">Personal discretion can protect those close to power. But systems do not rely on discretion alone. They endure by redistributing responsibility until no single choice feels decisive.</p><p class="transition-body">What was once navigated privately becomes administered publicly. What was once optional becomes routine. Authority moves from salons and hotels into schools, offices, and homes.</p><p class="transition-body">This is the moment where fascism stops being selective and becomes infrastructural.</p><p class="transition-close">Distance is no longer required.<br>Participation becomes ordinary.</p></div></section>
-<div class="section-divider"></div>
+<!-- STEP 5: TRANSITION 2 -->
+<div class="step step-transition scrollable-text-step" data-step="5">
+  <div class="transition-content">
+    <div class="transition-label">From Taste to Proximity</div>
+    <div class="transition-route">Italy &#8594; France &ensp;&#183;&ensp; Culture &#8594; Distance</div>
+    <div class="transition-line"></div>
+    <div class="transition-quote">Culture does not require loyalty to function.<br>It requires proximity.</div>
+    <p class="transition-body">In Italy, fascist power was cultivated through aesthetics, intellect, and modernity. Culture did not merely decorate authority; it disciplined taste and determined legitimacy. To belong was to appear correct.</p>
+    <p class="transition-body">But culture also offers a quieter advantage: it allows power to be approached without commitment.</p>
+    <p class="transition-body">What follows is not ideology, but adjacency. Not belief, but benefit. Fascism here does not ask to be endorsed. It asks only to be useful.</p>
+    <p class="transition-close">When authority becomes elegant, collaboration no longer needs conviction.<br>It needs access.</p>
+  </div>
+</div>
 
-<section class="poster-room" id="poster4" data-index="4"><div class="poster-sticky"><div class="poster-spotlight"></div><div class="poster-inner"><div class="poster-image-wrap"><img src="poster04.png" alt="Vichy France"></div><div class="wall-text-panel"><h3 class="wt-name">Vichy France</h3><div class="wt-subtitle">France, 1940–1944</div><div class="wt-role">Allegory · Administration · Moral Infrastructure</div><div class="wt-thesis">Fascism does not always appear as force.<br>Sometimes it appears as care.</div><p class="wt-body">The Vichy regime governed not primarily through spectacle or mass mobilization, but through normalization. Authority was framed as protection. Obedience was framed as responsibility. Collaboration was rendered administrative, domestic, and moral.</p><p class="wt-body">In Vichy propaganda, the state was imagined as a guardian: organizing families, guiding children, preserving tradition, and transmitting values. These images did not demand belief. They asked for trust. In doing so, they dissolved the distinction between private life and political power.</p><p class="wt-body">This poster contains no villain, no threat, and no explicit ideology. That absence is intentional. Fascism here operates without passion or charisma&thinsp;— embedded in paperwork, education, public health, and routine. Participation becomes habitual. Resistance becomes impolite.</p><div class="wt-divider"></div><p class="wt-poetic">This image does not persuade.<br>It reassures.</p><p class="wt-reflection">Placed after figures of conviction, culture, and collaboration, Vichy reveals fascism at its most durable: not as an exception, but as a system that presents itself as necessary, reasonable, and maternal.</p><p class="wt-poetic" style="margin-top:1rem">When authority feels protective, submission feels like gratitude.</p></div></div><div class="view-text-prompt">Scroll to view wall text</div></div></section>
+<!-- STEP 6: POSTER 3 -->
+<div class="step step-poster" data-step="6">
+  <div class="poster-layout">
+    <div class="poster-spotlight"></div>
+    <div class="poster-image-wrap"><img src="poster03.png" alt="Coco Chanel"></div>
+    <div class="wall-text-panel">
+      <h3 class="wt-name">Coco Chanel</h3>
+      <div class="wt-subtitle">France, 1940&#8211;1944</div>
+      <div class="wt-role">Designer &#183; Cultural Figure &#183; Collaborator</div>
+      <div class="wt-slogan">&#8220;Order is elegant&#8221;</div>
+      <div class="wt-thesis">Collaboration does not always announce itself as ideology.<br>Sometimes it presents itself as discretion.</div>
+      <p class="wt-body">During the German occupation of France, Coco Chanel resided at the H&#244;tel Ritz, a location reserved for senior German officers and collaborators. Her personal relationship with a German intelligence officer granted her protection, mobility, and access unavailable to most Parisians. While her fashion house remained closed during the war, Chanel actively pursued personal and financial interests, including attempts to reclaim control of her perfume business under antisemitic &#8220;Aryanization&#8221; laws imposed by the occupation.</p>
+      <p class="wt-body">Chanel did not speak publicly for fascism, nor did she organize on its behalf. Her collaboration operated through proximity rather than proclamation. She benefited from the conditions of occupation while maintaining aesthetic and social distance from the regime itself&thinsp;&#8212; a posture that allowed deniability without risk.</p>
+      <div class="wt-divider"></div>
+      <p class="wt-poetic">This poster does not depict belief.<br>It depicts alignment.</p>
+      <p class="wt-reflection">Placed alongside images of ideological conviction and institutional authority, Chanel represents a different mode of participation: collaboration as survival strategy, opportunism as neutrality, elegance as insulation. In such cases, power does not require loyalty&thinsp;&#8212; only usefulness.</p>
+      <p class="wt-poetic" style="margin-top:1rem">When order becomes profitable, silence becomes a position.</p>
+    </div>
+  </div>
+</div>
 
-<section class="transition-panel"><div class="transition-content fade-observe"><div class="transition-label">From Reassurance to Inevitability</div><div class="transition-route">State Normalization → Biological Consequence</div><div class="transition-line"></div><div class="transition-quote">When obedience becomes routine, the system no longer needs to persuade.<br>It classifies.</div><p class="transition-body">Under Vichy, authority appeared as care&thinsp;— protective, administrative, maternal. Participation became ordinary. Resistance became impolite.</p><p class="transition-body">But normalization is not the final stage. It is the condition that makes the final stage possible. When a society has learned to comply through care, convenience, and routine, it can be reorganized through classification without resistance.</p><p class="transition-close">What follows does not command. It does not reassure. It does not judge.<br>It defines.</p></div></section>
-<div class="section-divider"></div>
+<!-- STEP 7: TRANSITION 3 -->
+<div class="step step-transition scrollable-text-step" data-step="7">
+  <div class="transition-content">
+    <div class="transition-label">From Distance to Normalization</div>
+    <div class="transition-route">Individual &#8594; State &ensp;&#183;&ensp; Discretion &#8594; Administration</div>
+    <div class="transition-line"></div>
+    <div class="transition-quote">When collaboration no longer requires individuals, it becomes policy.</div>
+    <p class="transition-body">Personal discretion can protect those close to power. But systems do not rely on discretion alone. They endure by redistributing responsibility until no single choice feels decisive.</p>
+    <p class="transition-body">What was once navigated privately becomes administered publicly. What was once optional becomes routine. Authority moves from salons and hotels into schools, offices, and homes.</p>
+    <p class="transition-body">This is the moment where fascism stops being selective and becomes infrastructural.</p>
+    <p class="transition-close">Distance is no longer required.<br>Participation becomes ordinary.</p>
+  </div>
+</div>
 
-<section class="poster-room" id="poster5" data-index="5"><div class="poster-sticky"><div class="poster-spotlight"></div><div class="poster-inner"><div class="poster-image-wrap"><img src="poster05.png" alt="Germany: The Ideal Type"></div><div class="wall-text-panel"><h3 class="wt-name">The Ideal Type</h3><div class="wt-subtitle">Germany, 1933–1945</div><div class="wt-role">Classification · Optimization · Permanence</div><div class="wt-thesis">When ideology becomes design, belief is no longer required.</div><p class="wt-body">The final image in this sequence does not depict an individual. It depicts a category.</p><p class="wt-body">Under the Third Reich, the feminine was not celebrated but classified. Womanhood was reduced to biological function, racial designation, and reproductive capacity. The regime did not merely assign roles to women&thinsp;— it defined which women qualified as women at all. Beauty was not personal; it was diagnostic. Health was not private; it was hereditary. Motherhood was not chosen; it was optimized.</p><p class="wt-body">The geometric abstraction of this image is not decorative. It is structural. The figure is idealized not to inspire admiration, but to establish a standard against which all others are measured, categorized, and excluded. This is authority speaking in the language of biology and design&thinsp;— where persuasion has been replaced by classification, and compliance has been replaced by inevitability.</p><div class="wt-divider"></div><p class="wt-poetic">This poster does not persuade.<br>It classifies.</p><p class="wt-reflection">By the time a system can define what a person should look like, believe, and produce&thinsp;— and present that definition as nature rather than ideology&thinsp;— it has already succeeded. What preceded this image made it possible. What follows it is not escalation. It is maintenance.</p></div></div><div class="view-text-prompt">Scroll to view wall text</div></div></section>
+<!-- STEP 8: POSTER 4 -->
+<div class="step step-poster" data-step="8">
+  <div class="poster-layout">
+    <div class="poster-spotlight"></div>
+    <div class="poster-image-wrap"><img src="poster04.png" alt="Vichy France"></div>
+    <div class="wall-text-panel">
+      <h3 class="wt-name">Vichy France</h3>
+      <div class="wt-subtitle">France, 1940&#8211;1944</div>
+      <div class="wt-role">Allegory &#183; Administration &#183; Moral Infrastructure</div>
+      <div class="wt-thesis">Fascism does not always appear as force.<br>Sometimes it appears as care.</div>
+      <p class="wt-body">The Vichy regime governed not primarily through spectacle or mass mobilization, but through normalization. Authority was framed as protection. Obedience was framed as responsibility. Collaboration was rendered administrative, domestic, and moral.</p>
+      <p class="wt-body">In Vichy propaganda, the state was imagined as a guardian: organizing families, guiding children, preserving tradition, and transmitting values. These images did not demand belief. They asked for trust. In doing so, they dissolved the distinction between private life and political power.</p>
+      <p class="wt-body">This poster contains no villain, no threat, and no explicit ideology. That absence is intentional. Fascism here operates without passion or charisma&thinsp;&#8212; embedded in paperwork, education, public health, and routine. Participation becomes habitual. Resistance becomes impolite.</p>
+      <div class="wt-divider"></div>
+      <p class="wt-poetic">This image does not persuade.<br>It reassures.</p>
+      <p class="wt-reflection">Placed after figures of conviction, culture, and collaboration, Vichy reveals fascism at its most durable: not as an exception, but as a system that presents itself as necessary, reasonable, and maternal.</p>
+      <p class="wt-poetic" style="margin-top:1rem">When authority feels protective, submission feels like gratitude.</p>
+    </div>
+  </div>
+</div>
 
-<section class="mirror-section" id="mirror"><div class="mirror-intro fade-observe"><p>Every portrait in this exhibition depicted someone else.</p><p style="margin-top:1rem">This one does not.</p></div><div class="mirror-frame fade-observe"><video id="mirrorVideo" autoplay playsinline muted></video><div class="mirror-grain"></div><div class="mirror-vignette"></div><button class="mirror-activate" id="mirrorActivate">Reveal</button><div class="mirror-fallback" id="mirrorFallback"><div class="mirror-fallback-inner" id="mirrorFallbackInner"></div><p>The final image requires no screen.<br>It is already looking back at you.</p></div></div><div class="mirror-caption" id="mirrorCaption"><p>The question it leaves you with is not <em>who believed</em>,<br>but <strong>what was allowed to become normal</strong>.</p></div></section>
+<!-- STEP 9: TRANSITION 4 -->
+<div class="step step-transition scrollable-text-step" data-step="9">
+  <div class="transition-content">
+    <div class="transition-label">From Reassurance to Inevitability</div>
+    <div class="transition-route">State Normalization &#8594; Biological Consequence</div>
+    <div class="transition-line"></div>
+    <div class="transition-quote">When obedience becomes routine, the system no longer needs to persuade.<br>It classifies.</div>
+    <p class="transition-body">Under Vichy, authority appeared as care&thinsp;&#8212; protective, administrative, maternal. Participation became ordinary. Resistance became impolite.</p>
+    <p class="transition-body">But normalization is not the final stage. It is the condition that makes the final stage possible. When a society has learned to comply through care, convenience, and routine, it can be reorganized through classification without resistance.</p>
+    <p class="transition-close">What follows does not command. It does not reassure. It does not judge.<br>It defines.</p>
+  </div>
+</div>
 
-<section class="epilogue" id="epilogue"><div class="epilogue-content fade-observe"><p class="epi-lead">Fascism does not announce itself as an ending.<br>It presents itself as a solution.</p><p>Across these images, authority changes its language. It moves from discipline to culture, from elegance to administration, from reassurance to inevitability. At no point does it require universal hatred or mass hysteria. It requires only repetition, legitimacy, and time.</p><p>This project does not ask whether fascism is evil. It asks how it becomes acceptable.</p><p>If the final image feels distant, impersonal, or inevitable, consider what preceded it. No single poster produced this outcome. Each made the next one possible.</p><div class="wt-divider" style="margin:2rem 0"></div><p class="epi-close">The mirror this exhibition offers is not historical.<br>It is structural.</p><p class="epi-question">The question it leaves you with is not <em>who believed</em>, but what was allowed to become normal.</p></div></section>
+<!-- STEP 10: POSTER 5 -->
+<div class="step step-poster" data-step="10">
+  <div class="poster-layout">
+    <div class="poster-spotlight"></div>
+    <div class="poster-image-wrap"><img src="poster05.png" alt="Germany: The Ideal Type"></div>
+    <div class="wall-text-panel">
+      <h3 class="wt-name">The Ideal Type</h3>
+      <div class="wt-subtitle">Germany, 1933&#8211;1945</div>
+      <div class="wt-role">Classification &#183; Optimization &#183; Permanence</div>
+      <div class="wt-thesis">When ideology becomes design, belief is no longer required.</div>
+      <p class="wt-body">The final image in this sequence does not depict an individual. It depicts a category.</p>
+      <p class="wt-body">Under the Third Reich, the feminine was not celebrated but classified. Womanhood was reduced to biological function, racial designation, and reproductive capacity. The regime did not merely assign roles to women&thinsp;&#8212; it defined which women qualified as women at all. Beauty was not personal; it was diagnostic. Health was not private; it was hereditary. Motherhood was not chosen; it was optimized.</p>
+      <p class="wt-body">The geometric abstraction of this image is not decorative. It is structural. The figure is idealized not to inspire admiration, but to establish a standard against which all others are measured, categorized, and excluded. This is authority speaking in the language of biology and design&thinsp;&#8212; where persuasion has been replaced by classification, and compliance has been replaced by inevitability.</p>
+      <div class="wt-divider"></div>
+      <p class="wt-poetic">This poster does not persuade.<br>It classifies.</p>
+      <p class="wt-reflection">By the time a system can define what a person should look like, believe, and produce&thinsp;&#8212; and present that definition as nature rather than ideology&thinsp;&#8212; it has already succeeded. What preceded this image made it possible. What follows it is not escalation. It is maintenance.</p>
+    </div>
+  </div>
+</div>
 
-<section class="closing-page" id="closing"><div class="closing-content fade-observe"><p>Fascism does not survive by convincing everyone.</p><p>It survives by making resistance feel unnecessary.</p></div></section>
+<!-- STEP 11: MIRROR -->
+<div class="step step-mirror" data-step="11">
+  <div class="mirror-intro">
+    <p>Every portrait in this exhibition depicted someone else.</p>
+    <p style="margin-top:.8rem">This one does not.</p>
+  </div>
+  <div class="mirror-frame" id="mirrorFrame">
+    <video id="mirrorVideo" autoplay playsinline muted></video>
+    <div class="mirror-grain"></div>
+    <div class="mirror-vignette"></div>
+    <button class="mirror-activate" id="mirrorActivate">Reveal</button>
+    <div class="mirror-fallback" id="mirrorFallback">
+      <div class="mirror-fallback-inner" id="mirrorFallbackInner"></div>
+      <p>The final image requires no screen.<br>It is already looking back at you.</p>
+    </div>
+  </div>
+  <div class="mirror-caption" id="mirrorCaption">
+    <p>The question it leaves you with is not <em>who believed</em>,<br>but <strong>what was allowed to become normal</strong>.</p>
+  </div>
+</div>
 
+<!-- STEP 12: EPILOGUE -->
+<div class="step step-epilogue scrollable-text-step" data-step="12">
+  <div class="epilogue-content">
+    <p class="epi-lead">Fascism does not announce itself as an ending.<br>It presents itself as a solution.</p>
+    <p>Across these images, authority changes its language. It moves from discipline to culture, from elegance to administration, from reassurance to inevitability. At no point does it require universal hatred or mass hysteria. It requires only repetition, legitimacy, and time.</p>
+    <p>This project does not ask whether fascism is evil. It asks how it becomes acceptable.</p>
+    <p>If the final image feels distant, impersonal, or inevitable, consider what preceded it. No single poster produced this outcome. Each made the next one possible.</p>
+    <p class="epi-close">The mirror this exhibition offers is not historical.<br>It is structural.</p>
+    <p class="epi-question">The question it leaves you with is not <em>who believed</em>, but what was allowed to become normal.</p>
+  </div>
+</div>
+
+<!-- STEP 13: CLOSING -->
+<div class="step step-closing" data-step="13">
+  <div class="closing-content">
+    <p>Fascism does not survive by convincing everyone.</p>
+    <p>It survives by making resistance feel unnecessary.</p>
+  </div>
+</div>
+
+</div>
+
+<!-- DOCS MODAL -->
 <div class="docs-modal" id="docsModal">
-<button class="docs-close" id="docsClose"><span>←</span> Return to Exhibition</button>
+<button class="docs-close" id="docsClose"><span>&#8592;</span> Return to Exhibition</button>
 <div class="docs-modal-inner">
 <div class="docs-tabs">
 <button class="docs-tab active" data-tab="essay">Catalog Essay</button>
@@ -277,33 +504,33 @@ img { display:block; max-width:100%; }
 <h2>When Power Stops Persuading</h2>
 <p>Fascism is often remembered through its excesses: mass rallies, uniforms, symbols, and violence. These images persist because they allow for moral clarity and historical distance. They suggest that fascism announces itself loudly, that it arrives already monstrous, and that its appeal lies in irrationality.</p>
 <p>This exhibition proposes a more disturbing interpretation.</p>
-<p>Fascism succeeds not by rejecting a society’s values, but by inhabiting them.</p>
+<p>Fascism succeeds not by rejecting a society&#8217;s values, but by inhabiting them.</p>
 <p>Across Europe, women played essential roles in this process. They organized populations, shaped cultural legitimacy, normalized obedience, and translated ideology into everyday life. In some cases, they wielded institutional authority; in others, they provided aesthetic, moral, or social insulation for power. These roles were not peripheral. They were structural.</p>
-<p>The sequence of images in <em>Les femmes du fascisme</em> traces a progression from persuasion to inevitability. Authority begins as discipline&thinsp;— framed as service and virtue. It becomes culture&thinsp;— framed as refinement and modernity. It adopts elegance and discretion, allowing collaboration without declaration. It enters the domestic and administrative sphere, where obedience feels like care. Finally, it dispenses with persuasion altogether, reducing society to classification and optimization.</p>
+<p>The sequence of images in <em>Les femmes du fascisme</em> traces a progression from persuasion to inevitability. Authority begins as discipline&thinsp;&#8212; framed as service and virtue. It becomes culture&thinsp;&#8212; framed as refinement and modernity. It adopts elegance and discretion, allowing collaboration without declaration. It enters the domestic and administrative sphere, where obedience feels like care. Finally, it dispenses with persuasion altogether, reducing society to classification and optimization.</p>
 <p>The final image does not depict fanaticism. It depicts clarity.</p>
 <p>By the time ideology speaks in the language of biology and design, belief is no longer required. The system has already succeeded. What remains is maintenance.</p>
 <p>This progression challenges the assumption that fascism is sustained by hatred alone. Hatred may mobilize, but normalization sustains. The most durable authoritarian systems are those that do not feel authoritarian at all.</p>
 <p>The women depicted in this exhibition are not presented as anomalies. They are presented as evidence: that power does not always dominate from above, but circulates through culture, care, and legitimacy. When these domains align, violence becomes administrative rather than exceptional.</p>
 <p>The mirror this exhibition holds up is not historical nostalgia. It is structural warning.</p>
-<p>The question it leaves unresolved is not whether fascism can return, but whether societies recognize it while it is still persuading&thinsp;— or only after it has stopped.</p>
+<p>The question it leaves unresolved is not whether fascism can return, but whether societies recognize it while it is still persuading&thinsp;&#8212; or only after it has stopped.</p>
 </div>
 <div class="docs-content" id="tab-thesis">
 <h2>Curatorial Thesis &amp; Ethical Position</h2>
 <h3>Project Overview</h3>
 <p><strong>Les femmes du fascisme</strong> is a visual and curatorial investigation into how fascist systems in Europe mobilized women to stabilize power across political, cultural, and domestic domains. The project spans Spain, Italy, France, and Germany, tracing a structural progression rather than a national comparison.</p>
-<p>The exhibition argues that fascism did not rely solely on coercion or mass hysteria. It embedded itself through legitimacy, taste, care, administration, and normalization&thinsp;— domains in which women played decisive roles.</p>
+<p>The exhibition argues that fascism did not rely solely on coercion or mass hysteria. It embedded itself through legitimacy, taste, care, administration, and normalization&thinsp;&#8212; domains in which women played decisive roles.</p>
 <h3>Thesis</h3>
 <p>Fascism persists not because it is irrational, but because it is adaptive. Across different national contexts, authoritarian systems aligned themselves with preexisting values: morality and service; culture and refinement; elegance and discretion; domestic care and administration; biological inevitability.</p>
 <p>Women were central to these alignments. Whether as leaders, ideologues, collaborators, or symbolic figures, they translated authoritarian power into forms that felt ethical, modern, respectable, or necessary.</p>
 <h3>Structural Logic</h3>
 <ul class="doc-list">
-<li><strong>Discipline (Spain)</strong>&thinsp;— Authority framed as moral duty and service.</li>
-<li><strong>Culture (Italy)</strong>&thinsp;— Authority legitimized through aesthetics, modernism, and intellectual life.</li>
-<li><strong>Distance (France — Individual)</strong>&thinsp;— Authority navigated through discretion, benefit, and plausible deniability.</li>
-<li><strong>Normalization (France — State)</strong>&thinsp;— Authority rendered administrative, domestic, and reassuring.</li>
-<li><strong>Consequence (Germany)</strong>&thinsp;— Authority reduced to optimization, classification, and permanence.</li>
+<li><strong>Discipline (Spain)</strong>&thinsp;&#8212; Authority framed as moral duty and service.</li>
+<li><strong>Culture (Italy)</strong>&thinsp;&#8212; Authority legitimized through aesthetics, modernism, and intellectual life.</li>
+<li><strong>Distance (France &#8212; Individual)</strong>&thinsp;&#8212; Authority navigated through discretion, benefit, and plausible deniability.</li>
+<li><strong>Normalization (France &#8212; State)</strong>&thinsp;&#8212; Authority rendered administrative, domestic, and reassuring.</li>
+<li><strong>Consequence (Germany)</strong>&thinsp;&#8212; Authority reduced to optimization, classification, and permanence.</li>
 </ul>
-<p>The exhibition’s structure is cumulative. Each section does not contradict the previous one; it makes it functional.</p>
+<p>The exhibition&#8217;s structure is cumulative. Each section does not contradict the previous one; it makes it functional.</p>
 <h3>Ethical Position</h3>
 <p>This project does not aestheticize fascism to rehabilitate it, nor does it caricature it to reassure the viewer. It deliberately adopts historical visual restraint to demonstrate how authoritarian power <em>looked when it worked</em>.</p>
 <p>By refusing sensationalism, the exhibition denies the viewer moral distance. The absence of explicit villains, slogans, or shock imagery is intentional. The goal is recognition, not outrage.</p>
@@ -313,16 +540,16 @@ img { display:block; max-width:100%; }
 <div class="docs-content" id="tab-qa">
 <h2>Questions &amp; Answers</h2>
 <div class="qa-list">
-<div class="qa-item"><button class="qa-question">What is the purpose of this exhibition?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Les femmes du fascisme examines how women participated in, legitimized, and normalized fascist systems in twentieth-century Europe. Rather than focusing on atrocities or leaders alone, the exhibition studies the conditions that allowed authoritarian power to function — cultural, moral, domestic, and administrative — and the roles women played within those structures.</p><p>The project is not about assigning novelty or exceptionality to women’s involvement. It is about recognizing how power operates through everyday legitimacy.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">Is this exhibition arguing that women were responsible for fascism?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>No. The exhibition does not isolate women as uniquely culpable, nor does it frame them as passive victims. It examines women as participants within broader systems of power, in roles that were often decisive precisely because they appeared non-threatening, moral, or apolitical.</p><p>The exhibition’s argument is structural, not accusatory.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">Why focus on aesthetics and restraint rather than explicit violence or brutality?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Because fascism does not begin with brutality. It begins with persuasion, normalization, and legitimacy.</p><p>By adopting the visual languages fascist systems used when they were effective — discipline, elegance, care, culture — the exhibition reveals how authority looked before it required force. This approach avoids sensationalism and prevents viewers from distancing themselves emotionally from the subject.</p><p>The absence of violence is not denial; it is diagnosis.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">Some viewers may feel the imagery risks aestheticizing fascism. How do you respond?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Aestheticization becomes a problem when it obscures power or rehabilitates ideology. This exhibition does the opposite: it shows how aesthetics were instrumental to fascism’s success.</p><p>By refusing parody or exaggeration, the work denies viewers the comfort of ridicule. The images are unsettling precisely because they are coherent, restrained, and historically grounded. That discomfort is intentional and necessary.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">Why does the exhibition progress from individuals to abstraction?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>The structure reflects how authoritarian systems evolve.</p><p>The exhibition begins with identifiable figures and roles — discipline, culture, collaboration — and moves toward normalization and finally consequence. As the system matures, individual belief becomes less relevant. What remains is infrastructure.</p><p>The final image does not depict belief or persuasion. It depicts completion.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">What is the purpose of this exhibition?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Les femmes du fascisme examines how women participated in, legitimized, and normalized fascist systems in twentieth-century Europe. Rather than focusing on atrocities or leaders alone, the exhibition studies the conditions that allowed authoritarian power to function &#8212; cultural, moral, domestic, and administrative &#8212; and the roles women played within those structures.</p><p>The project is not about assigning novelty or exceptionality to women&#8217;s involvement. It is about recognizing how power operates through everyday legitimacy.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">Is this exhibition arguing that women were responsible for fascism?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>No. The exhibition does not isolate women as uniquely culpable, nor does it frame them as passive victims. It examines women as participants within broader systems of power, in roles that were often decisive precisely because they appeared non-threatening, moral, or apolitical.</p><p>The exhibition&#8217;s argument is structural, not accusatory.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">Why focus on aesthetics and restraint rather than explicit violence or brutality?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Because fascism does not begin with brutality. It begins with persuasion, normalization, and legitimacy.</p><p>By adopting the visual languages fascist systems used when they were effective &#8212; discipline, elegance, care, culture &#8212; the exhibition reveals how authority looked before it required force. This approach avoids sensationalism and prevents viewers from distancing themselves emotionally from the subject.</p><p>The absence of violence is not denial; it is diagnosis.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">Some viewers may feel the imagery risks aestheticizing fascism. How do you respond?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Aestheticization becomes a problem when it obscures power or rehabilitates ideology. This exhibition does the opposite: it shows how aesthetics were instrumental to fascism&#8217;s success.</p><p>By refusing parody or exaggeration, the work denies viewers the comfort of ridicule. The images are unsettling precisely because they are coherent, restrained, and historically grounded. That discomfort is intentional and necessary.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">Why does the exhibition progress from individuals to abstraction?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>The structure reflects how authoritarian systems evolve.</p><p>The exhibition begins with identifiable figures and roles &#8212; discipline, culture, collaboration &#8212; and moves toward normalization and finally consequence. As the system matures, individual belief becomes less relevant. What remains is infrastructure.</p><p>The final image does not depict belief or persuasion. It depicts completion.</p></div></div></div>
 <div class="qa-item"><button class="qa-question">Why does the exhibition end with Germany?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Germany represents not escalation, but resolution.</p><p>Placed at the end, it appears not as an anomaly or exception, but as the logical outcome of processes already normalized elsewhere. The exhibition resists the idea that fascism was uniquely German or historically isolated. Instead, it shows how similar mechanisms operate across contexts, adapting to local values.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">Is this exhibition meant to draw parallels to contemporary politics?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Viewers are encouraged to reflect on how normalization, cultural legitimacy, and administrative authority function in any era. The work does not instruct audiences what to think — it invites them to recognize patterns.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">How should visitors approach this exhibition emotionally?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>There is no prescribed emotional response.</p><p>The exhibition avoids shock, outrage, or catharsis. Instead, it encourages attentiveness. If visitors feel unsettled without being able to point to a single moment of rupture, that response reflects the exhibition’s thesis.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">What distinguishes this exhibition from traditional historical treatments of fascism?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Most treatments emphasize extremity, collapse, or violence. Les femmes du fascisme focuses on durability.</p><p>It examines how fascism functioned when it was stable, persuasive, and administratively ordinary — and how that stability depended on legitimacy transmitted through culture, care, and routine.</p></div></div></div>
-<div class="qa-item"><button class="qa-question">What do you hope visitors take away from the exhibition?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>An understanding that authoritarian systems do not rely solely on coercion or fanaticism. They rely on alignment — with values people already trust.</p><p>The exhibition leaves visitors not with answers, but with a sharpened awareness of how power becomes acceptable.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">Is this exhibition meant to draw parallels to contemporary politics?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Viewers are encouraged to reflect on how normalization, cultural legitimacy, and administrative authority function in any era. The work does not instruct audiences what to think &#8212; it invites them to recognize patterns.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">How should visitors approach this exhibition emotionally?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>There is no prescribed emotional response.</p><p>The exhibition avoids shock, outrage, or catharsis. Instead, it encourages attentiveness. If visitors feel unsettled without being able to point to a single moment of rupture, that response reflects the exhibition&#8217;s thesis.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">What distinguishes this exhibition from traditional historical treatments of fascism?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>Most treatments emphasize extremity, collapse, or violence. Les femmes du fascisme focuses on durability.</p><p>It examines how fascism functioned when it was stable, persuasive, and administratively ordinary &#8212; and how that stability depended on legitimacy transmitted through culture, care, and routine.</p></div></div></div>
+<div class="qa-item"><button class="qa-question">What do you hope visitors take away from the exhibition?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>An understanding that authoritarian systems do not rely solely on coercion or fanaticism. They rely on alignment &#8212; with values people already trust.</p><p>The exhibition leaves visitors not with answers, but with a sharpened awareness of how power becomes acceptable.</p></div></div></div>
 <div class="qa-item"><button class="qa-question">Is this exhibition intended as a warning?<span class="qa-icon"></span></button><div class="qa-answer"><div class="qa-answer-inner"><p>It is intended as a study.</p><p>Any warning emerges from recognition, not instruction.</p></div></div></div>
 </div></div>
 </div></div></div>
@@ -330,170 +557,203 @@ img { display:block; max-width:100%; }
 <script>
 (function(){
 'use strict';
-const $=(s,c=document)=>c.querySelector(s);
-const $$=(s,c=document)=>[...c.querySelectorAll(s)];
-const clamp=(v,mn,mx)=>Math.min(Math.max(v,mn),mx);
+var $=function(s,c){return (c||document).querySelector(s);};
+var $$=function(s,c){return [].slice.call((c||document).querySelectorAll(s));};
 
-const ent=$('#entrance'),ew=$('#entranceWalls'),sn=$('#sideNav');
-function updateEntrance(){
-  if(!ent||!ew)return;
-  const r=ent.getBoundingClientRect(),s=ent.offsetHeight-innerHeight;
-  const p=clamp(-r.top/s,0,1);
-  const mb=Math.min(innerHeight*.4,innerWidth*.35);
-  ew.style.borderWidth=mb*(1-p)+'px';
-  sn.classList.toggle('visible',p>.8);
+var steps = $$('.step');
+var totalSteps = steps.length;
+var currentStep = 0;
+var transitioning = false;
+
+var btnNext = $('#btnNext');
+var btnPrev = $('#btnPrev');
+var navControls = $('#navControls');
+var sideNav = $('#sideNav');
+var dots = $$('.side-nav .dot');
+
+function goToStep(target, instant) {
+  if(transitioning && !instant) return;
+  if(target < 0 || target >= totalSteps) return;
+  if(target === currentStep && !instant) return;
+
+  transitioning = true;
+  var prev = steps[currentStep];
+  var next = steps[target];
+  var goingForward = target > currentStep;
+
+  // When entering a poster step going backward, auto-reveal text (already seen)
+  // When entering forward or via jump, start with poster only
+  if(next.classList.contains('step-poster')) {
+    if(goingForward || instant) {
+      next.classList.remove('text-revealed');
+    } else {
+      next.classList.add('text-revealed');
+    }
+  }
+
+  if(instant) {
+    prev.classList.remove('active');
+    prev.style.cssText = '';
+    next.classList.add('active');
+    currentStep = target;
+    updateUI();
+    transitioning = false;
+    return;
+  }
+
+  // Reset scroll positions
+  var wtp = next.querySelector('.wall-text-panel');
+  if(wtp) wtp.scrollTop = 0;
+  if(next.classList.contains('scrollable-text-step')) next.scrollTop = 0;
+
+  var exitY = goingForward ? '-20px' : '20px';
+  var enterFrom = goingForward ? '20px' : '-20px';
+
+  next.style.transition = 'none';
+  next.style.transform = 'translateY(' + enterFrom + ')';
+  next.style.opacity = '0';
+  next.classList.add('active');
+  void next.offsetHeight;
+  next.style.transition = '';
+
+  prev.style.transform = 'translateY(' + exitY + ')';
+  prev.style.opacity = '0';
+  next.style.transform = 'translateY(0)';
+  next.style.opacity = '1';
+
+  setTimeout(function() {
+    prev.classList.remove('active');
+    prev.style.cssText = '';
+    currentStep = target;
+    updateUI();
+    transitioning = false;
+
+    if(next.classList.contains('step-mirror')) {
+      var mc = $('#mirrorCaption');
+      if(mc) setTimeout(function(){ mc.classList.add('visible'); }, 800);
+    }
+  }, 900);
 }
 
-const fo=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:.15,rootMargin:'0px 0px -5% 0px'});
-$$('.fade-observe').forEach(el=>fo.observe(el));
+function updateUI() {
+  btnPrev.classList.toggle('hidden', currentStep === 0);
+  btnNext.classList.toggle('hidden', currentStep === totalSteps - 1);
+  navControls.classList.toggle('visible', currentStep > 0);
+  sideNav.classList.toggle('visible', currentStep > 0);
 
-function easeOut(t){return 1-Math.pow(1-t,3);}
-
-
-function prepareWallTextScroll(){
-  $$('.wall-text-panel').forEach(panel=>{
-    if(panel.querySelector('.wt-scroll-inner')) return;
-    const inner=document.createElement('div');
-    inner.className='wt-scroll-inner';
-    // Move existing children into inner wrapper
-    while(panel.firstChild){
-      inner.appendChild(panel.firstChild);
-    }
-    panel.appendChild(inner);
+  // Update side nav dots
+  dots.forEach(function(d){ d.classList.remove('active'); });
+  var activeDot = null;
+  dots.forEach(function(d) {
+    var s = parseInt(d.dataset.step, 10);
+    if(s <= currentStep) activeDot = d;
   });
-}
-prepareWallTextScroll();
-
-function updatePosters(){
-  $$('.poster-room').forEach(room=>{
-    const r = room.getBoundingClientRect();
-    const sticky = room.querySelector('.poster-sticky');
-
-    // Manual sticky: lock the viewport-sized panel in place while scrolling through the room
-    if(sticky){
-      if(r.top > 0){
-        // Room hasn't reached viewport top yet
-        sticky.style.position = 'absolute';
-        sticky.style.top = '0px';
-        sticky.style.bottom = 'auto';
-      } else if(r.bottom <= innerHeight){
-        // Room bottom has passed viewport bottom — pin to end
-        sticky.style.position = 'absolute';
-        sticky.style.top = (room.offsetHeight - innerHeight) + 'px';
-        sticky.style.bottom = 'auto';
-      } else {
-        // Room spans viewport — fix in place
-        sticky.style.position = 'fixed';
-        sticky.style.top = '0px';
-      }
-      sticky.style.left = '0px';
-      sticky.style.right = '0px';
-    }
-
-    // Progress 0–1 through the room
-    const scrollable = room.offsetHeight - innerHeight;
-    const p = clamp(-r.top / (scrollable || 1), 0, 1);
-
-    const iw = room.querySelector('.poster-image-wrap');
-    const wt = room.querySelector('.wall-text-panel');
-    const inner = room.querySelector('.poster-inner');
-    const sp = room.querySelector('.poster-spotlight');
-    const wtInner = wt ? wt.querySelector('.wt-scroll-inner') : null;
-    if(!iw || !wt || !inner) return;
-
-    /*
-      Timeline (350vh room):
-        0.00–0.12 : poster fades in + rises to center
-        0.12–0.28 : poster locked at center, breathing room
-        0.28–0.44 : wall text slides in from right + fades in
-        0.44–0.54 : HOLD — both visible, viewer reads top of text
-        0.54–0.70 : scroll wall text content if it overflows
-        0.70–0.80 : HOLD — both together before exit
-        0.80–0.96 : both exit upward together
-    */
-
-    // 1) Poster opacity
-    var pOp = p < 0.02 ? 0 : p < 0.12 ? easeOut((p - 0.02) / 0.10) : 1;
-
-    // 2) Poster rises into center then locks (vh below center → 0)
-    var enterY = p < 0.12 ? (1 - easeOut(p / 0.12)) * 20 : 0;
-
-    // 3) Wall text slides in from right + fades
-    var wtOp, wtX;
-    if(p < 0.28){ wtOp = 0; wtX = 50; }
-    else if(p < 0.44){ var t = easeOut((p - 0.28) / 0.16); wtOp = t; wtX = 50 * (1 - t); }
-    else { wtOp = 1; wtX = 0; }
-
-    // 4) Scroll wall text content within the panel (if content overflows)
-    if(wtInner){
-      var panelH = wt.offsetHeight;
-      var contentH = wtInner.scrollHeight;
-      var maxScroll = Math.max(0, contentH - panelH);
-      if(maxScroll > 0){
-        var scrollT = 0;
-        if(p > 0.54 && p <= 0.70) scrollT = (p - 0.54) / 0.16;
-        else if(p > 0.70) scrollT = 1;
-        wtInner.style.transform = 'translateY(' + (-maxScroll * easeOut(scrollT)) + 'px)';
-      } else {
-        wtInner.style.transform = 'translateY(0)';
-      }
-    }
-
-    // 5) Exit: entire inner translates upward
-    var exitY = p > 0.80 ? -100 * easeOut((p - 0.80) / 0.16) : 0;
-
-    // Apply — poster never shifts horizontally, wall text never shifts vertically
-    iw.style.opacity = pOp;
-    iw.style.transform = 'translate(-50%,-50%) translateY(' + enterY + 'vh)';
-    if(sp) sp.style.transform = 'translate(-50%,-50%) translateY(' + enterY + 'vh)';
-
-    // Wall text stays at top:50% via CSS, translateY(-50%) keeps it centered, only X slides
-    wt.style.opacity = wtOp;
-    wt.style.transform = 'translateY(-50%) translateX(' + wtX + 'px)';
-
-    inner.style.transform = 'translateY(' + exitY + 'vh)';
-
-    if(pOp > 0.5) room.classList.add('entered');
-    room.classList.toggle('revealed', p > 0.28);
-  });
+  if(activeDot) activeDot.classList.add('active');
 }
 
-const ns=['entrance','entry','poster1','poster2','poster3','poster4','poster5','mirror','epilogue','closing'];
-const nd=$$('.side-nav .dot');
-function updateNav(){
-  let a=0;
-  ns.forEach((id,i)=>{const el=document.getElementById(id);if(el&&scrollY>=el.offsetTop-innerHeight*.5)a=i;});
-  nd.forEach((d,i)=>d.classList.toggle('active',i===a));
+/* POSTER SUB-STEPS: first continue reveals wall text, second advances */
+function handleNext() {
+  if(transitioning) return;
+  var cur = steps[currentStep];
+  if(cur.classList.contains('step-poster') && !cur.classList.contains('text-revealed')) {
+    cur.classList.add('text-revealed');
+    return;
+  }
+  goToStep(currentStep + 1);
 }
-nd.forEach(d=>d.addEventListener('click',()=>{const el=document.getElementById(d.dataset.target);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}));
 
-const ma=$('#mirrorActivate'),mv=$('#mirrorVideo'),mf=$('#mirrorFallback'),mc=$('#mirrorCaption'),mfi=$('#mirrorFallbackInner'),mfr=$('.mirror-frame');
-if(ma)ma.addEventListener('click',async()=>{
-  try{const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:960}}});mv.srcObject=s;await mv.play();mv.classList.add('active');ma.classList.add('hidden');if(mc)mc.classList.add('visible');}
-  catch(e){ma.classList.add('hidden');mf.classList.add('active');if(mc)mc.classList.add('visible');}
+function handlePrev() {
+  if(transitioning) return;
+  var cur = steps[currentStep];
+  if(cur.classList.contains('step-poster') && cur.classList.contains('text-revealed')) {
+    cur.classList.remove('text-revealed');
+    return;
+  }
+  goToStep(currentStep - 1);
+}
+
+// Start button
+var startBtn = $('#startBtn');
+var entranceWalls = $('#entranceWalls');
+startBtn.addEventListener('click', function(e) {
+  e.stopPropagation();
+  if(currentStep !== 0 || transitioning) return;
+  entranceWalls.classList.add('open');
+  setTimeout(function(){ goToStep(1); }, 1200);
 });
-if(mfr)mfr.addEventListener('mousemove',e=>{const r=mfr.getBoundingClientRect();if(mfi){mfi.style.setProperty('--mx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');mfi.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');}});
 
-const dt=$('#docsTrigger'),dm=$('#docsModal'),dc=$('#docsClose');
-if(dt)dt.addEventListener('click',()=>{dm.classList.add('open');document.body.style.overflow='hidden';});
-if(dc)dc.addEventListener('click',()=>{dm.classList.remove('open');document.body.style.overflow='';});
-$$('.docs-tab').forEach(t=>t.addEventListener('click',()=>{
-  $$('.docs-tab').forEach(x=>x.classList.remove('active'));$$('.docs-content').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');const c=$('#tab-'+t.dataset.tab);if(c)c.classList.add('active');
-}));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dm.classList.contains('open')){dm.classList.remove('open');document.body.style.overflow='';}});
+// Nav buttons
+btnNext.addEventListener('click', handleNext);
+btnPrev.addEventListener('click', handlePrev);
 
-$$('.qa-question').forEach(btn=>{btn.addEventListener('click',()=>{
-  const item=btn.closest('.qa-item'),ans=item.querySelector('.qa-answer'),open=item.classList.contains('open');
-  $$('.qa-item.open').forEach(o=>{if(o!==item){o.classList.remove('open');o.querySelector('.qa-answer').style.maxHeight='0';}});
+// Side nav dots
+dots.forEach(function(d){ d.addEventListener('click', function(){
+  goToStep(parseInt(d.dataset.step, 10));
+});});
+
+// Keyboard
+document.addEventListener('keydown', function(e) {
+  if($('#docsModal').classList.contains('open')) {
+    if(e.key === 'Escape') { $('#docsModal').classList.remove('open'); }
+    return;
+  }
+  if(e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    if(currentStep === 0) { startBtn.click(); return; }
+    handleNext();
+  }
+  if(e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    handlePrev();
+  }
+});
+
+// Mirror
+var ma=$('#mirrorActivate'),mv=$('#mirrorVideo'),mf=$('#mirrorFallback'),mc=$('#mirrorCaption'),mfi=$('#mirrorFallbackInner'),mfr=$('#mirrorFrame');
+if(ma) ma.addEventListener('click', async function() {
+  try {
+    var s = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:960}}});
+    mv.srcObject = s; await mv.play(); mv.classList.add('active'); ma.classList.add('hidden');
+    if(mc) mc.classList.add('visible');
+  } catch(e) {
+    ma.classList.add('hidden'); mf.classList.add('active');
+    if(mc) mc.classList.add('visible');
+  }
+});
+if(mfr) mfr.addEventListener('mousemove', function(e) {
+  var r = mfr.getBoundingClientRect();
+  if(mfi) {
+    mfi.style.setProperty('--mx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');
+    mfi.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');
+  }
+});
+
+// Docs modal
+var dt=$('#docsTrigger'),dm=$('#docsModal'),dc=$('#docsClose');
+if(dt) dt.addEventListener('click', function(){ dm.classList.add('open'); });
+if(dc) dc.addEventListener('click', function(){ dm.classList.remove('open'); });
+$$('.docs-tab').forEach(function(t){ t.addEventListener('click', function(){
+  $$('.docs-tab').forEach(function(x){x.classList.remove('active');});
+  $$('.docs-content').forEach(function(x){x.classList.remove('active');});
+  t.classList.add('active');
+  var c=$('#tab-'+t.dataset.tab); if(c) c.classList.add('active');
+});});
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape'&&dm.classList.contains('open')){dm.classList.remove('open');}
+});
+
+// Q&A
+$$('.qa-question').forEach(function(btn){ btn.addEventListener('click', function(){
+  var item=btn.closest('.qa-item'), ans=item.querySelector('.qa-answer'), open=item.classList.contains('open');
+  $$('.qa-item.open').forEach(function(o){if(o!==item){o.classList.remove('open');o.querySelector('.qa-answer').style.maxHeight='0';}});
   if(open){item.classList.remove('open');ans.style.maxHeight='0';}
   else{item.classList.add('open');ans.style.maxHeight=ans.scrollHeight+'px';}
 });});
 
-let tk=false;
-function onScroll(){if(!tk){requestAnimationFrame(()=>{updateEntrance();updatePosters();updateNav();tk=false;});tk=true;}}
-addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll,{passive:true});onScroll();
-['poster01.png','poster02.png','poster03.png','poster04.png','poster05.png'].forEach(s=>{const i=new Image();i.src=s;});
+// Preload
+['poster01.png','poster02.png','poster03.png','poster04.png','poster05.png'].forEach(function(s){var i=new Image();i.src=s;});
+
+updateUI();
 })();
 </script>
 </body></html>
