@@ -1,4 +1,14 @@
 {
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/lesfemmesv11.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/lesfemmesv11.html"
+    }
+  ],
   "redirects": [
     {
       "source": "/(.*)",
